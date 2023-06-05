@@ -1,0 +1,23 @@
+CLASSE,ETABLISSEMENT,Adresse,numero,npa,ville,telephone,site_internet,RuleID,RuleID_1,RuleID_2,beds
+1,HVS - Hôpital psychiatrique de Malévoz,Route de Morgins,10,1870,Monthey,0800 012 210,http://www.hopitalduvalais.ch,,Rule_1,Rule_1,30
+1,HVS - Clinique de Saint-Amé,Vers Saint-Amé,10,1890,St-Maurice,027/604.66.55,http://www.hopitalduvalais.ch,,Rule_1,Rule_1,20
+1,HVS - Hôpital de Martigny,Avenue de la Fusion,27,1920,Martigny,027/603.90.00,http://www.hopitalduvalais.ch,,Rule_1,Rule_1,10
+1,HVS - Hôpital de Sion,Avenue du Grand-Champsec,80,1951,Sion,027/603.40.00,http://www.hopitalduvalais.ch,,Rule_1,Rule_1,11
+1,HVS - Institut Central des Hôpitaux ICH,Avenue du Grand-Champsec,86,1951,Sion,027/603.47.00,http://www.hopitalduvalais.ch,,Rule_1,Rule_1,15
+1,HVS - Hôpital de Sierre,Rue St-Charles,14,3960,Sierre,027/603.70.00,http://www.hopitalduvalais.ch,,Rule_1,Rule_1,30
+1,HVS - Centre Valaisan de Pneumologie (CVP),Route de la Moubra,87,3963,Crans-Montana,027/603.80.00,http://www.hopitalduvalais.ch,,Rule_1,Rule_1,12
+1,HVS - Hôpital de Brigue,Oberlandstrasse,14,3900,Brig,027/604.33.33,http://www.spitalvs.ch/de/spital-wallis/standorte/brig.html,,Rule_1,Rule_1,45
+1,HVS - Hôpital de Vige,Pflanzettastrasse,8,3930,Visp,027/604.33.33,http://www.spitalvs.ch/de/spital-wallis/standorte/visp.html,,Rule_1,Rule_1,23
+1,HRC - Hôpital de Monthey,Route de Morgins,54,1870,Monthey,024/473.17.31,http://www.hopitalrivierachablais.ch,,Rule_1,Rule_1,45
+1,HRC - Hôpital d'Aigle,Chemin du Grand-Chne,,1860,Aigle,024/468.86.88,http://www.hopitalrivierachablais.ch,,Rule_1,Rule_1,23
+1,HRC - Hôpital de Vevey la Providence,Av. de la Prairie,3,1800,Vevey,021/977.55.55,http://www.hopitalrivierachablais.ch,,Rule_1,Rule_1,34
+1,Clinique de Valre,Rue Pré-Fleuri,16,1950,Sion,027/327.10.10,http://www.cliniquevalere.ch,,Rule_1,Rule_1,12
+1,Clinique CIC Valais,Route du Léman,29,1907,Saxon,027/743.40.40,http://www.cic-valais.ch,,Rule_1,Rule_1,43
+1,Leukerbad Clinic,Willy-Spühlerstrasse,2,3954,Leukerbad,027/472.51.08,http://www.leukerbadclinic.ch,,Rule_1,Rule_1,33
+1,Berner Klinik Montana,Impasse Palace Bellevue,1,3963,Crans-Montana,027/485.51.21,http://www.bernerklinik.ch,,Rule_1,Rule_1,44
+1,Luzerner Höhenklinik Montana,Rte de L'Astoria,2,3963,Crans-Montana,027/485.81.81,http://www.lhm.ch,,Rule_1,Rule_1,22
+1,Clinique romande de réadaptation (CRR SUVA),Avenue Grand-Champsec,90,1951,Sion,027/603.30.30,http://www.crr-suva.ch,,Rule_1,Rule_1,33
+1,HRC - Hôpital de Vevey le Samaritain,Boulevard Paderewski,3,1800,Vevey,021/923.40.00,http://www.hopitalrivierachablais.ch,,Rule_1,Rule_1,50
+1,HRC - Hôpital de Montreux,Avenue de Belmont,25,1820,Montreuy,021/966.66.66,http://www.hopitalrivierachablais.ch,,Rule_1,Rule_1,33
+1,HVS - Psychiatriezentrum Oberwallis,Oberlandstrasse,14,3900,Brig,027/604.33.33,http://www.hopitalvs.ch/de/unsere-fachbereiche/fachbereiche-von-a-bis-z/psychiatrie-und-psychotherapie/psychiatriezentrum-oberwallis.html,,Rule_1,Rule_1,42
+1,HUG-Clinique de Crans-Montana,Impasse Clairmont,2,3963,Crans-Montana,027/485.61.11,http://www.hug-ge.ch/crans-montana,,Rule_1,Rule_1,22

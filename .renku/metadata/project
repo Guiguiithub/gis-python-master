@@ -1,0 +1,32 @@
+{
+  "@renku_data_type": "renku.core.models.project.Project",
+  "@renku_oid": "project",
+  "agent_version": "1.1.1",
+  "annotations": [],
+  "automated_update": false,
+  "creator": {
+    "@renku_data_type": "renku.core.models.provenance.agent.Person",
+    "@renku_data_value": {
+      "affiliation": null,
+      "alternate_name": null,
+      "email": "jean-paul.calbimonte@hevs.ch",
+      "id": "mailto:jean-paul.calbimonte@hevs.ch",
+      "name": "Jean-Paul Calbimonte Pérez"
+    }
+  },
+  "date_created": {
+    "@renku_data_type": "datetime.datetime",
+    "@renku_data_value": "2019-03-05T10:33:49+00:00"
+  },
+  "description": null,
+  "id": "/projects/jean-paul.calbimonte/gis-python",
+  "immutable_template_files": [],
+  "keywords": [],
+  "name": "GIS Python",
+  "template_id": null,
+  "template_metadata": null,
+  "template_ref": null,
+  "template_source": null,
+  "template_version": null,
+  "version": "9"
+}

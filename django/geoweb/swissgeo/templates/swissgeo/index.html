@@ -1,0 +1,9 @@
+<ul>
+  {% for piste in pistes %}
+  <li>
+    <a href="/swissgeo/pistes/{{piste.id}}">
+      {{piste.pistes_name}}
+    </a>
+  </li>
+  {% endfor %}
+</ul>

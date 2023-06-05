@@ -1,0 +1,6 @@
+shapely
+pandas
+matplotlib
+descartes
+geopandas
+ipython-sql
