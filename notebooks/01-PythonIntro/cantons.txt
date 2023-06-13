@@ -1,6 +1,0 @@
-Vaud,VD,100
-Valais,VS,30
-Jura,JU,5
-Bern,BE,50
-Genève,GE,76
-Fribourg,FR,24
