@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .models import City, Canton, Piste
+from .models import Piste
 from django.template import loader
 from django.http import Http404
 from django.core.serializers import serialize
@@ -21,14 +21,6 @@ def pistes(request):
     return render(request, 'swissgeo/index.html', context)
 
 
-def city(request, city_id):
-    try:
-        city = City.objects.get(pk=city_id)
-    except City.DoesNotExist:
-        raise Http404("City not found!!")
-    return render(request, 'swissgeo/city.html', {'city': city})
-
-
 def piste(request, id):
     try:
         pistes = Piste.objects.get(id=id)
@@ -40,12 +32,17 @@ def piste(request, id):
     return render(request, 'swissgeo/piste.html', context)
 
 
-def cantonsjson(request):
-    cantons = Canton.objects.all()
-    ser = serialize('geojson', cantons,
+def anzerjson(request):
+    anzeres = Piste.objects.all()
+    ser = serialize('geojson', anzeres,
                     geometry_field='geom',
                     fields=('name',))
     return HttpResponse(ser)
+
+
+def anzere(request):
+    context = {}
+    return render(request, 'swissgeo/anzere.html', context)
 
 
 def cantons(request):

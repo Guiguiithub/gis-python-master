@@ -4,16 +4,6 @@ from django.contrib.gis.db import models
 # Create your models here.
 
 
-class City(models.Model):
-    city_name = models.CharField(max_length=100)
-
-    class Meta:
-        verbose_name_plural = "cities"
-
-    def __str__(self):
-        return self.city_name
-
-
 class Piste(models.Model):
     id = models.PositiveIntegerField(primary_key=True)
     geom = models.MultiLineStringField()

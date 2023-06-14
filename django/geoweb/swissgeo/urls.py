@@ -4,9 +4,8 @@ from . import views
 urlpatterns = [
 
     path('', views.index, name='index'),
-    path('piste/', views.pistes, name='pistes'),
-    path('city/<int:city_id>', views.city, name='city'),
+    path('pistes', views.pistes, name='pistes'),
     path('pistes/<int:id>', views.piste, name='piste'),
-    path('cantons.json', views.cantonsjson, name='cantonsjson'),
-    path('cantons', views.cantons, name='cantons'),
+    path('pistes.json', views.anzerjson, name='anzerjson'),
+    path('anzere', views.anzere, name='anzere'),
 ]
