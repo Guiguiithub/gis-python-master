@@ -36,7 +36,7 @@ def anzerjson(request):
     anzeres = Piste.objects.all()
     ser = serialize('geojson', anzeres,
                     geometry_field='geom',
-                    fields=('name',))
+                    fields=('pistes_name',))
     return HttpResponse(ser)
 
 

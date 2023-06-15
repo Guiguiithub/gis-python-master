@@ -9,19 +9,112 @@
 
 <body>
     {% leaflet_map "pistes" callback="main_map_init" %}
+    <div id="pisteName"></div>
+    <div id="pisteLength"></div>
     <script type="text/javascript">
+
+        let mapAnzere;
         function main_map_init(map, options) {
+            mapAnzere = map;
+
+            mapAnzere.setView(L.latLng(46.3166, 7.3995), 14)
             var dataurl = '{% url "anzerjson" %}'
             $.getJSON(dataurl, function (data) {
                 L.geoJson(data, { onEachFeature: onEachFeature }).addTo(map);
             });
         }
+        /*
+                function onEachFeature(feature, layer) {
+                    if (feature.properties &&
+                        feature.properties.name) {
+                        layer.bindPopup(feature.properties.name);
+                    }
+                }
+        */
+        function highlightFeature(e) {
+            var layer = e.target;
+            console.log("I'm there")
 
+            layer.setStyle({
+                weight: 5,
+                color: '#666',
+                dashArray: '',
+                fillOpacity: 0.7
+            });
+
+            layer.bringToFront();
+
+        }
+
+        function resetHighlight(e) {
+            var layer = e.target;
+            layer.setStyle({
+                weight: 3,
+                color: '#0000FF'
+            })
+        }
+
+        // assign event handlers for mouseover, mouseout, click
         function onEachFeature(feature, layer) {
-            if (feature.properties &&
-                feature.properties.name) {
-                layer.bindPopup(feature.properties.name);
+            layer.on({
+                mouseover: highlightFeature,
+                mouseout: resetHighlight,
+                click: zoomToFeature,
+            });
+            layer.setStyle({
+                weight: 3,
+                color: '#0000FF',
+                dashArray: '',
+                fillOpacity: 0.7
+            });
+        }
+        function zoomToFeature(e) {
+            mapAnzere.fitBounds(e.target.getBounds());
+            console.log(e.target.feature.properties)
+            let pisteName = e.target.feature.properties.pistes_name;
+            let pisteLength = calculateLength(e.target.feature.geometry);
+            $("#pisteName").text("Piste Name: " + pisteName);
+            $("#pisteLength").text("Piste Length: " + pisteLength + " meters");
+        }
+
+        function calculateLength(geometry) {
+            let length = 0;
+            if (geometry.type === 'MultiLineString') {
+                for (let i = 0; i < geometry.coordinates.length; i++) {
+                    length += calculateLineLength(geometry.coordinates[i]);
+                }
             }
+            return length.toFixed(2);
+        }
+
+        function calculateLineLength(coordinates) {
+            let length = 0;
+            for (let i = 1; i < coordinates.length; i++) {
+                const p1 = coordinates[i - 1];
+                const p2 = coordinates[i];
+                length += distanceBetweenPoints(p1, p2);
+            }
+            return length;
+        }
+
+        function distanceBetweenPoints(p1, p2) {
+            const lat1 = p1[1];
+            const lon1 = p1[0];
+            const lat2 = p2[1];
+            const lon2 = p2[0];
+
+            const R = 6371e3;
+            const phi1 = (lat1 * Math.PI) / 180;
+            const phi2 = (lat2 * Math.PI) / 180;
+            const deltaPhi = ((lat2 - lat1) * Math.PI) / 180;
+            const deltaLambda = ((lon2 - lon1) * Math.PI) / 180;
+
+            const a = Math.sin(deltaPhi / 2) * Math.sin(deltaPhi / 2) +
+                Math.cos(phi1) * Math.cos(phi2) *
+                Math.sin(deltaLambda / 2) * Math.sin(deltaLambda / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+            return R * c;
         }
 
     </script>
