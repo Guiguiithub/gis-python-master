@@ -6,8 +6,12 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
     <style>
+        body{
+            background-color: #404040; 
+        }
         .mapInfo {
             display: flex;
+            margin: 5em;
         }
 
         .mapcontainer {
@@ -15,6 +19,7 @@
             position: relative;
             overflow: hidden;
             padding-bottom: 50%;
+            border-radius: 5px;
         }
 
         .mapcontainer .leaflet-container {
@@ -29,7 +34,24 @@
         .info {
             width: 40%;
             padding-left: 10px;
+            color: white;
         }
+
+        .info div {
+            margin-bottom: 10px;
+            background-color: #1a1a1a;
+            border-radius: 5px;
+        }
+
+        #name {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        #Length {
+            font-size: 16px;
+        }
+
     </style>
 </head>
 
@@ -38,7 +60,7 @@
         <div class="mapcontainer">
             {% leaflet_map "pistes" callback="main_map_init" %}
         </div>
-        <div class="info">
+        <div id="infoId" class="info">
             <div id="name"></div>
             <div id="Length"></div>
         </div>
@@ -136,8 +158,8 @@
                 name = e.target.feature.properties.pistes_nam
             }
             let pisteLength = calculateLength(e.target.feature.geometry);
-            $("#name").text("Piste Name: " + name);
-            $("#Length").text("Piste Length: " + pisteLength + " meters");
+            $("#name").text("Nom de la piste: " + name);
+            $("#Length").text("Longueur de la piste: " + pisteLength + " mètres");
         }
 
         function calculateLength(geometry) {
