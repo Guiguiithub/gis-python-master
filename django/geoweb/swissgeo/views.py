@@ -45,6 +45,7 @@ def pistejson(request):
 
 def remonteejson(request):
     remontee = Remontee.objects.all()
+
     ser = serialize('geojson', remontee,
                     geometry_field='geom',
                     fields=('rems_name', 'type',))
