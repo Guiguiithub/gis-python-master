@@ -69,6 +69,7 @@
         let mapAnzere;
         function main_map_init(map, options) {
             mapAnzere = map;
+            let customShape;
 
             mapAnzere.setView(L.latLng(46.3166, 7.3995), 14)
             let pisteurl = '{% url "pistejson" %}'
@@ -78,6 +79,20 @@
             });
             $.getJSON(remonteeurl, function (data) {
                 L.geoJson(data, { onEachFeature: onEachFeature }).addTo(map);
+            });
+
+            mapAnzere.on('dblclick', function (e) {
+                if (customShape) {
+                mapAnzere.removeLayer(customShape);
+                }
+
+                customShape = L.circle(e.latlng, {
+                radius: 10,
+                color: 'red',
+                fillOpacity: 0.7,
+                });
+
+                customShape.addTo(mapAnzere);
             });
         }
         /*
@@ -204,6 +219,5 @@
 
             return R * c;
         }
-
     </script>
 </body>
