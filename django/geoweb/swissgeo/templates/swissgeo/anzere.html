@@ -40,18 +40,22 @@
         </div>
         <div class="info">
             <div id="pisteName"></div>
-            <div id="pisteLength"></div>
+            <div id="remonteeName"></div>
+            <div id="Length"></div>
         </div>
     </div>
     <script type="text/javascript">
-
         let mapAnzere;
         function main_map_init(map, options) {
             mapAnzere = map;
 
             mapAnzere.setView(L.latLng(46.3166, 7.3995), 14)
-            var dataurl = '{% url "anzerjson" %}'
-            $.getJSON(dataurl, function (data) {
+            let pisteurl = '{% url "pistejson" %}'
+            let remonteeurl = '{% url "remonteejson" %}'
+            $.getJSON(pisteurl, function (data) {
+                L.geoJson(data, { onEachFeature: onEachFeature }).addTo(map);
+            });
+            $.getJSON(remonteeurl, function (data) {
                 L.geoJson(data, { onEachFeature: onEachFeature }).addTo(map);
             });
         }
@@ -102,11 +106,11 @@
         }
         function zoomToFeature(e) {
             mapAnzere.fitBounds(e.target.getBounds());
-            console.log(e.target.feature.properties)
+            console.log(e)
             let pisteName = e.target.feature.properties.pistes_name;
             let pisteLength = calculateLength(e.target.feature.geometry);
             $("#pisteName").text("Piste Name: " + pisteName);
-            $("#pisteLength").text("Piste Length: " + pisteLength + " meters");
+            $("#Length").text("Piste Length: " + pisteLength + " meters");
         }
 
         function calculateLength(geometry) {

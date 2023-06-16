@@ -1,10 +1,11 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .models import Piste
+from .models import Piste, Remontee
 from django.template import loader
 from django.http import Http404
 from django.core.serializers import serialize
 from django.forms.models import model_to_dict
+from django.contrib.gis.geos import GEOSGeometry
 
 
 # Create your views here.
@@ -32,11 +33,21 @@ def piste(request, id):
     return render(request, 'swissgeo/piste.html', context)
 
 
-def anzerjson(request):
-    anzeres = Piste.objects.all()
-    ser = serialize('geojson', anzeres,
+def pistejson(request):
+    # remontee = Remontee.objects.all()
+    piste = Piste.objects.all()
+    # anzere = remontee.union(piste)
+    ser = serialize('geojson', piste,
                     geometry_field='geom',
                     fields=('pistes_name',))
+    return HttpResponse(ser)
+
+
+def remonteejson(request):
+    remontee = Remontee.objects.all()
+    ser = serialize('geojson', remontee,
+                    geometry_field='geom',
+                    fields=('rems_name',))
     return HttpResponse(ser)
 
 
@@ -49,3 +60,8 @@ def cantons(request):
     context = {}
     return render(request,
                   'swissgeo/cantons.html', context)
+
+
+def remontees(request):
+    context = {}
+    return render(request, 'swissgeo/')
