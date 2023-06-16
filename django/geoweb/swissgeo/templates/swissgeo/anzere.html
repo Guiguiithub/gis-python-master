@@ -39,8 +39,7 @@
             {% leaflet_map "pistes" callback="main_map_init" %}
         </div>
         <div class="info">
-            <div id="pisteName"></div>
-            <div id="remonteeName"></div>
+            <div id="name"></div>
             <div id="Length"></div>
         </div>
     </div>
@@ -84,32 +83,60 @@
 
         function resetHighlight(e) {
             var layer = e.target;
-            layer.setStyle({
-                weight: 3,
-                color: '#0000FF'
-            })
+            if (layer.feature.properties.type == 'remontee') {
+                layer.setStyle({
+                    color: '#ff0000',
+                    weight: 2,
+                    dashArray: '',
+                    fillOpacity: 0.7
+                })
+            } else {
+                layer.setStyle({
+                    weight: 3,
+                    color: '#0000FF',
+                    dashArray: '',
+                    fillOpacity: 0.7
+                })
+            }
         }
 
         // assign event handlers for mouseover, mouseout, click
         function onEachFeature(feature, layer) {
+            console.log(layer)
+            if (layer.feature.properties.type == 'remontee') {
+                layer.setStyle({
+                    color: '#ff0000',
+                    weight: 2,
+                    dashArray: '',
+                    fillOpacity: 0.7
+                })
+            }
+            else {
+                layer.setStyle({
+                    weight: 3,
+                    color: '#0000FF',
+                    dashArray: '',
+                    fillOpacity: 0.7
+                })
+            }
             layer.on({
                 mouseover: highlightFeature,
                 mouseout: resetHighlight,
                 click: zoomToFeature,
             });
-            layer.setStyle({
-                weight: 3,
-                color: '#0000FF',
-                dashArray: '',
-                fillOpacity: 0.7
-            });
         }
         function zoomToFeature(e) {
             mapAnzere.fitBounds(e.target.getBounds());
             console.log(e)
-            let pisteName = e.target.feature.properties.pistes_name;
+            let name
+            if (e.target.feature.properties.type == 'remontee') {
+                name = e.target.feature.properties.rems_name
+            }
+            else {
+                name = e.target.feature.properties.pistes_name
+            }
             let pisteLength = calculateLength(e.target.feature.geometry);
-            $("#pisteName").text("Piste Name: " + pisteName);
+            $("#name").text("Piste Name: " + name);
             $("#Length").text("Piste Length: " + pisteLength + " meters");
         }
 

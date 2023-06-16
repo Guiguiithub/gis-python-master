@@ -16,7 +16,7 @@ def index(request):
 def pistes(request):
     # output = ', '.join([c.city_name for c in top_cities])
     # return HttpResponse(output)
-    pistes = Piste.objects.order_by("pistes_name")
+    pistes = Piste.objects.order_by("pistes_nam")
     pistes_list = [model_to_dict(piste) for piste in pistes]
     context = {'pistes': pistes_list}
     return render(request, 'swissgeo/index.html', context)
@@ -39,7 +39,7 @@ def pistejson(request):
     # anzere = remontee.union(piste)
     ser = serialize('geojson', piste,
                     geometry_field='geom',
-                    fields=('pistes_name',))
+                    fields=('pistes_nam', 'type',))
     return HttpResponse(ser)
 
 
@@ -47,7 +47,7 @@ def remonteejson(request):
     remontee = Remontee.objects.all()
     ser = serialize('geojson', remontee,
                     geometry_field='geom',
-                    fields=('rems_name',))
+                    fields=('rems_name', 'type',))
     return HttpResponse(ser)
 
 
