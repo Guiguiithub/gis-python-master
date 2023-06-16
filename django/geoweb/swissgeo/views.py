@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .models import Piste, Remontee
+from .models import Piste, Remontee, Batiment
 from django.template import loader
 from django.http import Http404
 from django.core.serializers import serialize
@@ -65,3 +65,11 @@ def cantons(request):
 def remontees(request):
     context = {}
     return render(request, 'swissgeo/')
+
+
+def batimentjson(request):
+    batiment = Batiment.objects.all()
+    ser = serialize('geojson', batiment,
+                    geometry_field='geom',
+                    fields=('bat_name', 'type',))
+    return HttpResponse(ser)

@@ -40,3 +40,16 @@ class Canton(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Batiment(models.Model):
+    id = models.PositiveIntegerField(primary_key=True)
+    bat_name = models.CharField(max_length=250)
+    type = models.CharField(max_length=250)
+    geom = models.MultiPolygonField()
+
+    class Meta:
+        db_table = "batiments"
+
+    def __str__(self):
+        return self.bat_name
