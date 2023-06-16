@@ -11,7 +11,7 @@
         }
         .mapInfo {
             display: flex;
-            margin: 5em;
+            margin: 2em;
         }
 
         .mapcontainer {
@@ -149,17 +149,20 @@
         }
         function zoomToFeature(e) {
             mapAnzere.fitBounds(e.target.getBounds());
-            console.log(e)
-            let name
-            if (e.target.feature.properties.type == 'remontee') {
-                name = e.target.feature.properties.rems_name
-            }
-            else {
-                name = e.target.feature.properties.pistes_nam
-            }
+            console.log(e);
+            let name;
+            let type = e.target.feature.properties.type;
             let pisteLength = calculateLength(e.target.feature.geometry);
-            $("#name").text("Nom de la piste: " + name);
-            $("#Length").text("Longueur de la piste: " + pisteLength + " mètres");
+            if (type === 'remontee') {
+                name = e.target.feature.properties.rems_name;
+                $("#name").text("Nom de la remontée: " + name);
+                $("#Length").text("Longueur de la remontée: " + pisteLength + " mètres");
+            } else {
+                name = e.target.feature.properties.pistes_nam;
+                $("#name").text("Nom de la piste: " + name);
+                $("#Length").text("Longueur de la piste: " + pisteLength + " mètres");
+            }
+            //let pisteLength = calculateLength(e.target.feature.geometry);
         }
 
         function calculateLength(geometry) {
