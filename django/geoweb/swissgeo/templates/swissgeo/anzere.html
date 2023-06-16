@@ -51,10 +51,14 @@
             mapAnzere.setView(L.latLng(46.3166, 7.3995), 14)
             let pisteurl = '{% url "pistejson" %}'
             let remonteeurl = '{% url "remonteejson" %}'
+            let batimenturl = '{% url "batimentjson" %}'
             $.getJSON(pisteurl, function (data) {
                 L.geoJson(data, { onEachFeature: onEachFeature }).addTo(map);
             });
             $.getJSON(remonteeurl, function (data) {
+                L.geoJson(data, { onEachFeature: onEachFeature }).addTo(map);
+            });
+            $.getJSON(batimenturl, function (data) {
                 L.geoJson(data, { onEachFeature: onEachFeature }).addTo(map);
             });
         }
@@ -90,10 +94,17 @@
                     dashArray: '',
                     fillOpacity: 0.7
                 })
-            } else {
+            } else if (layer.feature.properties.type == 'piste') {
                 layer.setStyle({
                     weight: 3,
                     color: '#0000FF',
+                    dashArray: '',
+                    fillOpacity: 0.7
+                })
+            } else {
+                layer.setStyle({
+                    weight: 3,
+                    color: '#964B00',
                     dashArray: '',
                     fillOpacity: 0.7
                 })
@@ -111,10 +122,18 @@
                     fillOpacity: 0.7
                 })
             }
-            else {
+            else if (layer.feature.properties.type == 'piste') {
                 layer.setStyle({
                     weight: 3,
                     color: '#0000FF',
+                    dashArray: '',
+                    fillOpacity: 0.7
+                })
+            }
+            else {
+                layer.setStyle({
+                    weight: 3,
+                    color: '#964B00',
                     dashArray: '',
                     fillOpacity: 0.7
                 })
@@ -132,10 +151,21 @@
             if (e.target.feature.properties.type == 'remontee') {
                 name = e.target.feature.properties.rems_name
             }
-            else {
+            else if (e.target.feature.properties.type == 'piste') {
                 name = e.target.feature.properties.pistes_nam
             }
-            let pisteLength = calculateLength(e.target.feature.geometry);
+            else {
+                name = e.target.feature.properties.bat_name
+            }
+
+            let pisteLength
+            if (e.target.feature.geometry.type == 'MultiLineString') {
+                pisteLength = calculateLength(e.target.feature.geometry);
+            }
+            else {
+                pisteLength = e.target.feature.geometry.coordinates.Area
+            }
+            console.log(e.target.feature)
             $("#name").text("Piste Name: " + name);
             $("#Length").text("Piste Length: " + pisteLength + " meters");
         }
