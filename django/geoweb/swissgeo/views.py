@@ -63,8 +63,21 @@ def cantons(request):
 
 
 def remontees(request):
-    context = {}
-    return render(request, 'swissgeo/')
+    remontees = Remontee.objects.order_by("rems_name")
+    remontees_list = [model_to_dict(remontee) for remontee in remontees]
+    context = {'remontees': remontees_list}
+    return render(request, 'swissgeo/index.html', context)
+
+
+def remontee(request, id):
+    try:
+        remontees = Remontee.objects.get(id=id)
+        context = {
+            'remontees': remontees
+        }
+    except Remontee.DoesNotExist:
+        raise Http404("Remontée pas trouvée")
+    return render(request, 'swissgeo/remontee.html', context)
 
 
 def batimentjson(request):
