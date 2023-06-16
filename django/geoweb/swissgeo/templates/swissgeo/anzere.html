@@ -5,12 +5,44 @@
     {% leaflet_css %}
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
+    <style>
+        .mapInfo {
+            display: flex;
+        }
+
+        .mapcontainer {
+            width: 60%;
+            position: relative;
+            overflow: hidden;
+            padding-bottom: 50%;
+        }
+
+        .mapcontainer .leaflet-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100% !important;
+            height: 100% !important;
+            box-sizing: border-box;
+        }
+
+        .info {
+            width: 40%;
+            padding-left: 10px;
+        }
+    </style>
 </head>
 
 <body>
-    {% leaflet_map "pistes" callback="main_map_init" %}
-    <div id="pisteName"></div>
-    <div id="pisteLength"></div>
+    <div class="mapInfo">
+        <div class="mapcontainer">
+            {% leaflet_map "pistes" callback="main_map_init" %}
+        </div>
+        <div class="info">
+            <div id="pisteName"></div>
+            <div id="pisteLength"></div>
+        </div>
+    </div>
     <script type="text/javascript">
 
         let mapAnzere;
