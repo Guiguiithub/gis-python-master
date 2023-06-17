@@ -81,7 +81,8 @@
                 L.geoJson(data, { onEachFeature: onEachFeature }).addTo(map);
             });
 
-            mapAnzere.on('dblclick', function (e) {
+            // circle appears where we clicked
+            mapAnzere.on('click', function (e) {
                 if (customShape) {
                 mapAnzere.removeLayer(customShape);
                 }
