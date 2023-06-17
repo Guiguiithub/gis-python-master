@@ -67,6 +67,9 @@
     </div>
     <script type="text/javascript">
         let mapAnzere;
+        let targets = [];
+        localStorage.setItem("currentlySelected", "none");
+        localStorage.setItem("currentlySelectedType", "none");
         function main_map_init(map, options) {
             mapAnzere = map;
             let customShape;
@@ -113,7 +116,7 @@
             console.log("I'm there")
 
             layer.setStyle({
-                weight: 5,
+                weight: 7,
                 color: '#666',
                 dashArray: '',
                 fillOpacity: 0.7
@@ -122,30 +125,44 @@
             layer.bringToFront();
 
         }
+        function resetHighlightBase(e)
+        {
+            resetHighlight(e.target);
+        }
 
-        function resetHighlight(e) {
-            var layer = e.target;
+        function resetHighlight(target) {
+            var layer = target;
             if (layer.feature.properties.type == 'remontee') {
-                layer.setStyle({
-                    color: '#ff0000',
-                    weight: 2,
-                    dashArray: '',
-                    fillOpacity: 0.7
-                })
+                if(localStorage.getItem("currentlySelected")!=target.feature.properties.rems_name)
+                {
+                    layer.setStyle({
+                        color: '#ff0000',
+                        weight: 3,
+                        dashArray: '',
+                        fillOpacity: 0.7
+                    })
+                }
             } else if (layer.feature.properties.type == 'piste') {
-                layer.setStyle({
-                    weight: 3,
-                    color: '#0000FF',
-                    dashArray: '',
-                    fillOpacity: 0.7
-                })
-            } else {
-                layer.setStyle({
-                    weight: 3,
-                    color: '#964B00',
-                    dashArray: '',
-                    fillOpacity: 0.7
-                })
+                if(localStorage.getItem("currentlySelected")!=target.feature.properties.pistes_nam)
+                {
+                    layer.setStyle({
+                        weight: 4,
+                        color: '#0000FF',
+                        dashArray: '',
+                        fillOpacity: 0.7
+                    })
+                }
+            } else
+            {
+                if(localStorage.getItem("currentlySelected")!=target.feature.properties.bat_name)
+                {
+                    layer.setStyle({
+                        weight: 4,
+                        color: '#964B00',
+                        dashArray: '',
+                        fillOpacity: 0.7
+                    })
+                }
             }
         }
 
@@ -155,14 +172,14 @@
             if (layer.feature.properties.type == 'remontee') {
                 layer.setStyle({
                     color: '#ff0000',
-                    weight: 2,
+                    weight: 3,
                     dashArray: '',
                     fillOpacity: 0.7
                 })
             }
             else if (layer.feature.properties.type == 'piste') {
                 layer.setStyle({
-                    weight: 3,
+                    weight: 4,
                     color: '#0000FF',
                     dashArray: '',
                     fillOpacity: 0.7
@@ -170,7 +187,7 @@
             }
             else {
                 layer.setStyle({
-                    weight: 3,
+                    weight: 4,
                     color: '#964B00',
                     dashArray: '',
                     fillOpacity: 0.7
@@ -178,24 +195,33 @@
             }
             layer.on({
                 mouseover: highlightFeature,
-                mouseout: resetHighlight,
-                click: zoomToFeature,
+                mouseout: resetHighlightBase,
+                click: displayInfo,
             });
+
+            targets.push(layer);
         }
-        function zoomToFeature(e) {
+        function displayInfo(e) {
+            if (localStorage.getItem("currentlySelected")!="none")
+            {
+                resetHighlight(retrieveTargetByName(localStorage.getItem("currentlySelected")))
+            }
             mapAnzere.fitBounds(e.target.getBounds());
-            console.log(e)
             let name
+            localStorage.setItem("currentlySelectedType", e.target.feature.properties.type)
             if (e.target.feature.properties.type == 'remontee') {
-                name = e.target.feature.properties.rems_name
+                name = e.target.feature.properties.rems_name;
+                localStorage.setItem("currentlySelected", name);
                 $("#name").text("Nom de la remontée: " + name);
             }
             else if (e.target.feature.properties.type == 'piste') {
-                name = e.target.feature.properties.pistes_nam
+                name = e.target.feature.properties.pistes_nam;
+                localStorage.setItem("currentlySelected", name);
                 $("#name").text("Nom de la piste: " + name);
             }
             else {
-                name = e.target.feature.properties.bat_name
+                name = e.target.feature.properties.bat_name;
+                localStorage.setItem("currentlySelected", name);
                 $("#name").text("Nom du batiment: " + name);
             }
 
@@ -244,6 +270,24 @@
                     }
                 });
             }
+        }
+
+        function retrieveTargetByName(name) {
+            if (localStorage.getItem("currentlySelectedType") == 'remontee')
+            {
+                newTarget = targets.find(target => target.feature.properties.rems_name === name);
+            }
+            else if (localStorage.getItem("currentlySelectedType") == 'piste')
+            {
+                newTarget = targets.find(target => target.feature.properties.pistes_nam === name);
+            }
+            else
+            {
+                newTarget = targets.find(target => target.feature.properties.bat_name === name);
+            }
+            localStorage.setItem("currentlySelected", "none");
+            localStorage.setItem("currentlySelectedType", "none");
+            return newTarget;
         }
     </script>
 </body>
