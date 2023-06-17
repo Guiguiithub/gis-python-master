@@ -12,3 +12,4 @@
 - PythonGIS / QGIS / PostGIS
 - GeoPython
 - Leaflet
+- Docker
