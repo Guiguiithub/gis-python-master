@@ -12,3 +12,25 @@
   </li>
   {% endfor %}
 </ul>
+
+<h1 class="mb-3 text-center">Liste des remontées</h1>
+<ul class="list-group">
+  {% for remontee in remontees %}
+  <li>
+    <a href="/swissgeo/remontees/{{remontee.id}}" class="list-group-item list-group-item-action">
+      {{remontee.rems_name}}
+    </a>
+  </li>
+  {% endfor %}
+</ul>
+
+<h1 class="mb-3 text-center">Liste des batiments</h1>
+<ul class="list-group">
+  {% for batiment in batiments %}
+  <li>
+    <a href="/swissgeo/batiments/{{batiment.id}}" class="list-group-item list-group-item-action">
+      {{batiment.bat_name}}
+    </a>
+  </li>
+  {% endfor %}
+</ul>

@@ -53,3 +53,22 @@ class Batiment(models.Model):
 
     def __str__(self):
         return self.bat_name
+
+
+class PisteLength(models.Model):
+    piste = models.OneToOneField(Piste, on_delete=models.CASCADE)
+    tarnsformed_geom = models.MultiLineStringField()
+    length = models.FloatField()
+
+    def save(self, *args, **kwargs):
+        transformed = self.piste.geom.transform(3857, clone=True)
+        self.tarnsformed_geom = transformed
+        self.length = transformed.length
+
+        super().save(*args, **kwargs)
+
+    class Meta:
+        db_table = "piste_lengths"
+
+    def __str__(self):
+        return str(self.piste)
