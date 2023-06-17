@@ -6,8 +6,12 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
     <style>
+        body{
+            background-color: #404040; 
+        }
         .mapInfo {
             display: flex;
+            margin: 2em;
         }
 
         .mapcontainer {
@@ -15,6 +19,7 @@
             position: relative;
             overflow: hidden;
             padding-bottom: 50%;
+            border-radius: 5px;
         }
 
         .mapcontainer .leaflet-container {
@@ -29,7 +34,24 @@
         .info {
             width: 40%;
             padding-left: 10px;
+            color: white;
         }
+
+        .info div {
+            margin-bottom: 10px;
+            background-color: #1a1a1a;
+            border-radius: 5px;
+        }
+
+        #name {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        #Length {
+            font-size: 16px;
+        }
+
     </style>
 </head>
 
@@ -38,7 +60,7 @@
         <div class="mapcontainer">
             {% leaflet_map "pistes" callback="main_map_init" %}
         </div>
-        <div class="info">
+        <div id="infoId" class="info">
             <div id="name"></div>
             <div id="Length"></div>
         </div>
@@ -47,6 +69,7 @@
         let mapAnzere;
         function main_map_init(map, options) {
             mapAnzere = map;
+            let customShape;
 
             mapAnzere.setView(L.latLng(46.3166, 7.3995), 14)
             let pisteurl = '{% url "pistejson" %}'
@@ -60,6 +83,21 @@
             });
             $.getJSON(batimenturl, function (data) {
                 L.geoJson(data, { onEachFeature: onEachFeature }).addTo(map);
+            });
+
+            // circle appears where we clicked
+            mapAnzere.on('click', function (e) {
+                if (customShape) {
+                mapAnzere.removeLayer(customShape);
+                }
+
+                customShape = L.circle(e.latlng, {
+                radius: 10,
+                color: 'red',
+                fillOpacity: 0.7,
+                });
+
+                customShape.addTo(mapAnzere);
             });
         }
         /*
@@ -207,6 +245,5 @@
                 });
             }
         }
-
     </script>
 </body>

@@ -9,7 +9,12 @@ urlpatterns = [
     path('batiments/<int:id>', views.batiment, name='batiment'),
     path('remontees/<int:id>', views.remontee, name='remontee'),
     path('pistes.json', views.pistejson, name='pistejson'),
+
+    path('remontees', views.remontees, name='remontees'),
+    path('remontees/<int:id>', views.remontee, name='remontee'),
     path('remontee.json', views.remonteejson, name='remonteejson'),
+
+    # path('batiments', views.batiments, name='batiments'),
     path('batiment.json', views.batimentjson, name='batimentjson'),
     path('anzere', views.anzere, name='anzere'),
 
