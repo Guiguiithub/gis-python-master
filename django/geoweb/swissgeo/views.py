@@ -47,7 +47,7 @@ def pistejson(request):
     piste = Piste.objects.all()
     ser = serialize('geojson', piste,
                     geometry_field='geom',
-                    fields=('pistes_nam', 'type',))
+                    fields=('pistes_nam', 'type', 'difficulty',))
     return HttpResponse(ser)
 
 
@@ -62,6 +62,10 @@ def getLengthPiste(request, name):
     length = int(length)
 
     return JsonResponse(length, safe=False)
+
+
+def getDistancePiste(request, name1, name2):
+    cursor = connection.cursor()
 
 
 def remonteejson(request):

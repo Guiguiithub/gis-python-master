@@ -3,19 +3,25 @@
 <head>
     {% leaflet_js %}
     {% leaflet_css %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
+        crossorigin="anonymous"></script>
 
     <style>
-        body{
-            background-color: #404040; 
+        body {
+            background-color: #404040;
         }
+
         .mapInfo {
             display: flex;
             margin: 2em;
         }
 
         .mapcontainer {
-            width: 60%;
+            width: 50%;
             position: relative;
             overflow: hidden;
             padding-bottom: 50%;
@@ -33,25 +39,29 @@
 
         .info {
             width: 40%;
-            padding-left: 10px;
+            padding-left: 60px;
             color: white;
         }
 
         .info div {
             margin-bottom: 10px;
-            background-color: #1a1a1a;
             border-radius: 5px;
         }
 
+        .margin {
+            margin-left: 10px;
+        }
+
         #name {
-            font-size: 18px;
+            font-size: 30px;
             font-weight: bold;
+            text-align: center;
+
         }
 
         #Length {
             font-size: 16px;
         }
-
     </style>
 </head>
 
@@ -63,6 +73,31 @@
         <div id="infoId" class="info">
             <div id="name"></div>
             <div id="Length"></div>
+            <div id="Dificulty">
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="btn-group">
+            <button class="btn btn-danger dropdown-toggle margin" type="button" id="dropdownMenuButton"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Sélectionnez une piste
+            </button>
+            <div class="dropdown-menu" id="pistesDropdownMenu"></div>
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-danger dropdown-toggle margin" type="button" id="dropdownMenuButton"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Sélectionnez une remontée
+            </button>
+            <div class="dropdown-menu" id="remonteesDropdownMenu"></div>
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-danger dropdown-toggle margin" type="button" id="dropdownMenuButton"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Sélectionnez un batiment
+            </button>
+            <div class="dropdown-menu" id="batimentDropdownMenu"></div>
         </div>
     </div>
     <script type="text/javascript">
@@ -74,43 +109,86 @@
             mapAnzere = map;
             let customShape;
 
+            mapAnzere.options.maxZoom = 20;
             mapAnzere.setView(L.latLng(46.3166, 7.3995), 14)
+
             let pisteurl = '{% url "pistejson" %}'
             let remonteeurl = '{% url "remonteejson" %}'
             let batimenturl = '{% url "batimentjson" %}'
+
             $.getJSON(pisteurl, function (data) {
-                L.geoJson(data, { onEachFeature: onEachFeature }).addTo(map);
+                const geojsonLayer = L.geoJson(data, { onEachFeature: onEachFeature }).addTo(map);
+                //Populate the dropdown menu
+                const dropdownMenu = $("#pistesDropdownMenu");
+                for (let i = 0; i < data.features.length; i++) {
+                    let feature = data.features[i]
+                    let pisteName = feature.properties.pistes_nam;
+                    let dropdownItem = $("<a class='dropdown-item' href='#'>" + pisteName + "</a>")
+
+                    dropdownItem.click(function () {
+                        let bounds = L.geoJson(feature).getBounds();
+                        mapAnzere.fitBounds(bounds)
+                        //Call the displayInfo and hilighFeature
+                    })
+
+                    dropdownMenu.append(dropdownItem)
+                };
             });
+
             $.getJSON(remonteeurl, function (data) {
-                L.geoJson(data, { onEachFeature: onEachFeature }).addTo(map);
+                const geojsonLayer = L.geoJson(data, { onEachFeature: onEachFeature }).addTo(map);
+                //Populate the dropdown menu
+                const dropdownMenu = $("#remonteesDropdownMenu");
+                for (let i = 0; i < data.features.length; i++) {
+                    let feature = data.features[i]
+                    let remonteeName = feature.properties.rems_name;
+                    let dropdownItem = $("<a class='dropdown-item' href='#'>" + remonteeName + "</a>")
+
+                    dropdownItem.click(function () {
+                        let bounds = L.geoJson(feature).getBounds();
+                        mapAnzere.fitBounds(bounds)
+                        //Call the displayInfo and hilighFeature
+                    })
+
+                    dropdownMenu.append(dropdownItem)
+                };
+
             });
+
             $.getJSON(batimenturl, function (data) {
-                L.geoJson(data, { onEachFeature: onEachFeature }).addTo(map);
+                const geojsonLayer = L.geoJson(data, { onEachFeature: onEachFeature }).addTo(map);
+                //Populate the dropdown menu
+                const dropdownMenu = $("#batimentDropdownMenu");
+                for (let i = 0; i < data.features.length; i++) {
+                    let feature = data.features[i]
+                    let batimentName = feature.properties.bat_name;
+                    let dropdownItem = $("<a class='dropdown-item' href='#'>" + batimentName + "</a>")
+
+                    dropdownItem.click(function () {
+                        let bounds = L.geoJson(feature).getBounds();
+                        mapAnzere.fitBounds(bounds)
+                        //Call the displayInfo and hilighFeature
+                    })
+
+                    dropdownMenu.append(dropdownItem)
+                };
             });
 
             // circle appears where we clicked
             mapAnzere.on('click', function (e) {
                 if (customShape) {
-                mapAnzere.removeLayer(customShape);
+                    mapAnzere.removeLayer(customShape);
                 }
 
                 customShape = L.circle(e.latlng, {
-                radius: 10,
-                color: 'red',
-                fillOpacity: 0.7,
+                    radius: 10,
+                    color: 'red',
+                    fillOpacity: 0.7,
                 });
 
                 customShape.addTo(mapAnzere);
             });
         }
-        /*
-                function onEachFeature(feature, layer) {
-                    if (feature.properties &&
-                        feature.properties.name) {
-                        layer.bindPopup(feature.properties.name);
-                    }
-                }
-        */
         function highlightFeature(e) {
             var layer = e.target;
             console.log("I'm there")
@@ -125,16 +203,14 @@
             layer.bringToFront();
 
         }
-        function resetHighlightBase(e)
-        {
+        function resetHighlightBase(e) {
             resetHighlight(e.target);
         }
 
         function resetHighlight(target) {
             var layer = target;
             if (layer.feature.properties.type == 'remontee') {
-                if(localStorage.getItem("currentlySelected")!=target.feature.properties.rems_name)
-                {
+                if (localStorage.getItem("currentlySelected") != target.feature.properties.rems_name) {
                     layer.setStyle({
                         color: '#ff0000',
                         weight: 3,
@@ -143,8 +219,7 @@
                     })
                 }
             } else if (layer.feature.properties.type == 'piste') {
-                if(localStorage.getItem("currentlySelected")!=target.feature.properties.pistes_nam)
-                {
+                if (localStorage.getItem("currentlySelected") != target.feature.properties.pistes_nam) {
                     layer.setStyle({
                         weight: 4,
                         color: '#0000FF',
@@ -152,10 +227,8 @@
                         fillOpacity: 0.7
                     })
                 }
-            } else
-            {
-                if(localStorage.getItem("currentlySelected")!=target.feature.properties.bat_name)
-                {
+            } else {
+                if (localStorage.getItem("currentlySelected") != target.feature.properties.bat_name) {
                     layer.setStyle({
                         weight: 4,
                         color: '#964B00',
@@ -168,7 +241,6 @@
 
         // assign event handlers for mouseover, mouseout, click
         function onEachFeature(feature, layer) {
-            console.log(layer)
             if (layer.feature.properties.type == 'remontee') {
                 layer.setStyle({
                     color: '#ff0000',
@@ -202,8 +274,7 @@
             targets.push(layer);
         }
         function displayInfo(e) {
-            if (localStorage.getItem("currentlySelected")!="none")
-            {
+            if (localStorage.getItem("currentlySelected") != "none") {
                 resetHighlight(retrieveTargetByName(localStorage.getItem("currentlySelected")))
             }
             mapAnzere.fitBounds(e.target.getBounds());
@@ -212,17 +283,17 @@
             if (e.target.feature.properties.type == 'remontee') {
                 name = e.target.feature.properties.rems_name;
                 localStorage.setItem("currentlySelected", name);
-                $("#name").text("Nom de la remontée: " + name);
+                $("#name").text(name);
             }
             else if (e.target.feature.properties.type == 'piste') {
                 name = e.target.feature.properties.pistes_nam;
                 localStorage.setItem("currentlySelected", name);
-                $("#name").text("Nom de la piste: " + name);
+                $("#name").text(name);
             }
             else {
                 name = e.target.feature.properties.bat_name;
                 localStorage.setItem("currentlySelected", name);
-                $("#name").text("Nom du batiment: " + name);
+                $("#name").text(name);
             }
 
             let Length
@@ -270,19 +341,32 @@
                     }
                 });
             }
+            let difficulty;
+            if (e.target.feature.properties.type == 'piste') {
+                $("#Dificulty").html("<p>Difficulté de la piste :</p>")
+                if (e.target.feature.properties.difficulty == 'rouge') {
+                    let imageUrl = "https://cdn.discordapp.com/attachments/888190539093123072/1119660736109617162/Rouge.png"
+                    $("#Dificulty").append("<img src='" + imageUrl + "' alt='" + difficulty + " Difficulty'>");
+                }
+                else if (e.target.feature.properties.difficulty == 'bleu') {
+                    let imageUrl = "https://cdn.discordapp.com/attachments/888190539093123072/1119660744523395102/Bleu.png"
+                    $("#Dificulty").append("<img src='" + imageUrl + "' alt='" + difficulty + " Difficulty'>");
+                }
+                else {
+                    let imageUrl = "https://cdn.discordapp.com/attachments/888190539093123072/1119660747862065244/Noir.png"
+                    $("#Dificulty").append("<img src='" + imageUrl + "' alt='" + difficulty + " Difficulty'>");
+                }
+            }
         }
 
         function retrieveTargetByName(name) {
-            if (localStorage.getItem("currentlySelectedType") == 'remontee')
-            {
+            if (localStorage.getItem("currentlySelectedType") == 'remontee') {
                 newTarget = targets.find(target => target.feature.properties.rems_name === name);
             }
-            else if (localStorage.getItem("currentlySelectedType") == 'piste')
-            {
+            else if (localStorage.getItem("currentlySelectedType") == 'piste') {
                 newTarget = targets.find(target => target.feature.properties.pistes_nam === name);
             }
-            else
-            {
+            else {
                 newTarget = targets.find(target => target.feature.properties.bat_name === name);
             }
             localStorage.setItem("currentlySelected", "none");
