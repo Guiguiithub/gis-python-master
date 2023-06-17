@@ -64,6 +64,10 @@ def getLengthPiste(request, name):
     return JsonResponse(length, safe=False)
 
 
+def getDistancePiste(request, name1, name2):
+    cursor = connection.cursor()
+
+
 def remonteejson(request):
     remontee = Remontee.objects.all()
 
