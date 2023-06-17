@@ -47,7 +47,7 @@ def pistejson(request):
     piste = Piste.objects.all()
     ser = serialize('geojson', piste,
                     geometry_field='geom',
-                    fields=('pistes_nam', 'type',))
+                    fields=('pistes_nam', 'type', 'difficulty',))
     return HttpResponse(ser)
 
 

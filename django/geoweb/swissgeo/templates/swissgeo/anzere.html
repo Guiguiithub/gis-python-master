@@ -24,7 +24,7 @@
             width: 50%;
             position: relative;
             overflow: hidden;
-            padding-bottom: 40%;
+            padding-bottom: 50%;
             border-radius: 5px;
         }
 
@@ -39,19 +39,24 @@
 
         .info {
             width: 40%;
-            padding-left: 10px;
+            padding-left: 60px;
             color: white;
         }
 
         .info div {
             margin-bottom: 10px;
-            background-color: #1a1a1a;
             border-radius: 5px;
         }
 
+        .margin {
+            margin-left: 10px;
+        }
+
         #name {
-            font-size: 18px;
+            font-size: 30px;
             font-weight: bold;
+            text-align: center;
+
         }
 
         #Length {
@@ -68,15 +73,31 @@
         <div id="infoId" class="info">
             <div id="name"></div>
             <div id="Length"></div>
+            <div id="Dificulty">
+            </div>
         </div>
     </div>
-    <div class="btn-group">
-        <button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
-            aria-haspopup="true" aria-expanded="false">
-            Sélectionnez une piste
-        </button>
-        <div class="dropdown-menu" id="pistesDropdownMenu">
-
+    <div>
+        <div class="btn-group">
+            <button class="btn btn-danger dropdown-toggle margin" type="button" id="dropdownMenuButton"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Sélectionnez une piste
+            </button>
+            <div class="dropdown-menu" id="pistesDropdownMenu"></div>
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-danger dropdown-toggle margin" type="button" id="dropdownMenuButton"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Sélectionnez une remontée
+            </button>
+            <div class="dropdown-menu" id="remonteesDropdownMenu"></div>
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-danger dropdown-toggle margin" type="button" id="dropdownMenuButton"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Sélectionnez un batiment
+            </button>
+            <div class="dropdown-menu" id="batimentDropdownMenu"></div>
         </div>
     </div>
     <script type="text/javascript">
@@ -87,11 +108,13 @@
 
             mapAnzere.options.maxZoom = 20;
             mapAnzere.setView(L.latLng(46.3166, 7.3995), 14)
+
             let pisteurl = '{% url "pistejson" %}'
             let remonteeurl = '{% url "remonteejson" %}'
             let batimenturl = '{% url "batimentjson" %}'
+
             $.getJSON(pisteurl, function (data) {
-                L.geoJson(data, { onEachFeature: onEachFeature }).addTo(map);
+                const geojsonLayer = L.geoJson(data, { onEachFeature: onEachFeature }).addTo(map);
                 //Populate the dropdown menu
                 const dropdownMenu = $("#pistesDropdownMenu");
                 for (let i = 0; i < data.features.length; i++) {
@@ -108,11 +131,44 @@
                     dropdownMenu.append(dropdownItem)
                 };
             });
+
             $.getJSON(remonteeurl, function (data) {
-                L.geoJson(data, { onEachFeature: onEachFeature }).addTo(map);
+                const geojsonLayer = L.geoJson(data, { onEachFeature: onEachFeature }).addTo(map);
+                //Populate the dropdown menu
+                const dropdownMenu = $("#remonteesDropdownMenu");
+                for (let i = 0; i < data.features.length; i++) {
+                    let feature = data.features[i]
+                    let remonteeName = feature.properties.rems_name;
+                    let dropdownItem = $("<a class='dropdown-item' href='#'>" + remonteeName + "</a>")
+
+                    dropdownItem.click(function () {
+                        let bounds = L.geoJson(feature).getBounds();
+                        mapAnzere.fitBounds(bounds)
+                        //Call the displayInfo and hilighFeature
+                    })
+
+                    dropdownMenu.append(dropdownItem)
+                };
+
             });
+
             $.getJSON(batimenturl, function (data) {
-                L.geoJson(data, { onEachFeature: onEachFeature }).addTo(map);
+                const geojsonLayer = L.geoJson(data, { onEachFeature: onEachFeature }).addTo(map);
+                //Populate the dropdown menu
+                const dropdownMenu = $("#batimentDropdownMenu");
+                for (let i = 0; i < data.features.length; i++) {
+                    let feature = data.features[i]
+                    let batimentName = feature.properties.bat_name;
+                    let dropdownItem = $("<a class='dropdown-item' href='#'>" + batimentName + "</a>")
+
+                    dropdownItem.click(function () {
+                        let bounds = L.geoJson(feature).getBounds();
+                        mapAnzere.fitBounds(bounds)
+                        //Call the displayInfo and hilighFeature
+                    })
+
+                    dropdownMenu.append(dropdownItem)
+                };
             });
 
             // circle appears where we clicked
@@ -211,15 +267,15 @@
             let name
             if (e.target.feature.properties.type == 'remontee') {
                 name = e.target.feature.properties.rems_name
-                $("#name").text("Nom de la remontée: " + name);
+                $("#name").text(name);
             }
             else if (e.target.feature.properties.type == 'piste') {
                 name = e.target.feature.properties.pistes_nam
-                $("#name").text("Nom de la piste: " + name);
+                $("#name").text(name);
             }
             else {
                 name = e.target.feature.properties.bat_name
-                $("#name").text("Nom du batiment: " + name);
+                $("#name").text(name);
             }
 
             let Length
@@ -266,6 +322,22 @@
                         console.error('Error occurred while retrieving piste length.');
                     }
                 });
+            }
+            let difficulty;
+            if (e.target.feature.properties.type == 'piste') {
+                $("#Dificulty").html("<p>Difficulté de la piste :</p>")
+                if (e.target.feature.properties.difficulty == 'rouge') {
+                    let imageUrl = "https://cdn.discordapp.com/attachments/888190539093123072/1119660736109617162/Rouge.png"
+                    $("#Dificulty").append("<img src='" + imageUrl + "' alt='" + difficulty + " Difficulty'>");
+                }
+                else if (e.target.feature.properties.difficulty == 'bleu') {
+                    let imageUrl = "https://cdn.discordapp.com/attachments/888190539093123072/1119660744523395102/Bleu.png"
+                    $("#Dificulty").append("<img src='" + imageUrl + "' alt='" + difficulty + " Difficulty'>");
+                }
+                else {
+                    let imageUrl = "https://cdn.discordapp.com/attachments/888190539093123072/1119660747862065244/Noir.png"
+                    $("#Dificulty").append("<img src='" + imageUrl + "' alt='" + difficulty + " Difficulty'>");
+                }
             }
         }
     </script>
