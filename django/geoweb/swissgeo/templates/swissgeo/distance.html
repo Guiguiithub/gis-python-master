@@ -36,6 +36,10 @@
             box-sizing: border-box;
         }
 
+        #close {
+            color: white;
+        }
+
         footer {
             display: flex;
             justify-content: center;
@@ -77,6 +81,8 @@
         {% leaflet_map "pistes" callback="main_map_init" %}
     </div>
 
+    <div id="close"></div>
+
     <div class="btn-group">
         <button class="btn btn-danger dropdown-toggle margin" type="button" id="dropdownMenuButton"
             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -106,6 +112,7 @@
 
     function main_map_init(map, options) {
         mapAnzere = map;
+        let customShape;
         mapAnzere.options.maxZoom = 20;
         mapAnzere.setView(L.latLng(46.3166, 7.3995), 14)
 
@@ -118,25 +125,87 @@
         batimentLayer = L.layerGroup().addTo(map);
 
         $.getJSON(pisteurl, function (data) {
-            L.geoJson(data).addTo(pistesLayer)
+            L.geoJson(data, { onEachFeature: onEachFeature }).addTo(pistesLayer)
+            const dropdownMenu = $("#DropdownMenu1");
+            for (let i = 0; i < data.features.length; i++) {
+                let feature = data.features[i]
+                let pisteName = feature.properties.pistes_nam;
+                let dropdownItem = $("<a class='dropdown-item' href='#'>" + pisteName + "</a>")
+
+                dropdownItem.click(function () {
+                    let bounds = L.geoJson(feature).getBounds();
+                    mapAnzere.fitBounds(bounds)
+                })
+
+                dropdownMenu.append(dropdownItem)
+            };
         })
         $.getJSON(remonteeurl, function (data) {
-            L.geoJson(data).addTo(remonteeLayer)
+            const geoJsonLayer = L.geoJson(data, { onEachFeature: onEachFeature }).addTo(remonteeLayer)
+
+            const dropdownMenu = $("#DropdownMenu1");
+            for (let i = 0; i < data.features.length; i++) {
+                let feature = data.features[i]
+                let remonteeName = feature.properties.rems_name;
+                let dropdownItem = $("<a class='dropdown-item' href='#'>" + remonteeName + "</a>")
+
+                dropdownItem.click(function () {
+                    let bounds = L.geoJson(feature).getBounds();
+                    mapAnzere.fitBounds(bounds)
+                })
+
+                dropdownMenu.append(dropdownItem)
+            };
         })
         $.getJSON(batimenturl, function (data) {
-            L.geoJson(data).addTo(batimentLayer)
+            console.log(batimentLayer)
+            const geoJsonLayer = L.geoJson(data, { onEachFeature: onEachFeature }).addTo(batimentLayer)
+            const dropdownMenu = $("#DropdownMenu1");
+            for (let i = 0; i < data.features.length; i++) {
+                let feature = data.features[i]
+                let batimentName = feature.properties.bat_name;
+                let dropdownItem = $("<a class='dropdown-item' href='#'>" + batimentName + "</a>")
+
+                dropdownItem.click(function () {
+                    let bounds = L.geoJson(feature).getBounds();
+                    mapAnzere.fitBounds(bounds)
+                })
+
+                dropdownMenu.append(dropdownItem)
+            };
         })
 
-        console.log(pistesLayer)
-        pistesLayer.eachLayer(function (layer) {
-            console.log("I'm here")
-            layer.setStyle({ opacity: 0, fillOpacity: 0 });
-        })
-        remonteeLayer.eachLayer(function (layer) {
-            layer.setStyle({ opacity: 0, fillOpacity: 0 });
-        })
-        batimentLayer.eachLayer(function (layer) {
-            layer.setStyle({ opacity: 0, fillOpacity: 0 });
+        mapAnzere.on('click', function (e) {
+            if (customShape) {
+                mapAnzere.removeLayer(customShape);
+            }
+            customShape = L.circle(e.latlng, {
+                radius: 10,
+                color: 'red',
+                fillOpacity: 0.7,
+            });
+            customShape.addTo(mapAnzere);
+            //.lat = 46, .lng = 7
+            let coordinates = customShape.getLatLng();
+            console.log(coordinates)
+            let close
+            const url = `closestPiste/${coordinates.lat}/${coordinates.lng}`
+            $.ajax({
+                url: url,
+                success: function (data) {
+                    close = data;
+                    $("#close").text("La piste la plus proche de votre point est " + close.pistes_nam + " et elle se trouve à " + close.dist + " mètres")
+                },
+                error: function () {
+                    console.error('Error occurred while retrieving piste length.');
+                }
+            })
+        });
+    }
+
+    function onEachFeature(feature, layer) {
+        layer.setStyle({
+            opacity: 0,
         })
     }
 </script>
