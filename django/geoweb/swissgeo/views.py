@@ -151,3 +151,8 @@ def getAreaBatiment(request, name):
 def anzere(request):
     context = {}
     return render(request, 'swissgeo/anzere.html', context)
+
+
+def distance(request):
+    context = {}
+    return render(request, 'swissgeo/distance.html', context)

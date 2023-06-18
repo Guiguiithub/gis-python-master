@@ -12,6 +12,7 @@ urlpatterns = [
     path('remontee.json', views.remonteejson, name='remonteejson'),
     path('batiment.json', views.batimentjson, name='batimentjson'),
     path('anzere', views.anzere, name='anzere'),
+    path('distance', views.distance, name='distance'),
 
     # path to get variables
     path('get_length_piste/<str:name>/',
