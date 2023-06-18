@@ -79,6 +79,10 @@
             text-align: center;
         }
 
+        #Dificulty {
+            text-align: center;
+        }
+
         footer {
             display: flex;
             margin-top: auto;
@@ -89,41 +93,41 @@
             color: #8c8f93;
         }
 
-        @media (max-width: 768px)
-        {
-            #panzereLogo
-            {
+        @media (max-width: 768px) {
+            #panzereLogo {
                 display: none;
             }
-            .navbar
-            {
+
+            .navbar {
                 height: auto;
                 text-align: center;
             }
-            .navbar-toggler
-            {
+
+            .navbar-toggler {
                 position: relative;
                 left: 50%;
                 transform: translateX(-50%);
             }
-            .mapcontainer
-            {
+
+            .mapcontainer {
                 width: 100%;
             }
-            .break
-            {
+
+            .break {
                 flex-basis: 100%;
                 height: 0;
             }
-            .info
-            {
+
+            .info {
                 position: relative;
                 left: 50%;
                 transform: translateX(-50%);
+                width: 100%;
             }
         }
     </style>
 </head>
+
 <body>
     <nav class="navbar navbar-expand-md py-0 navbar-dark bg-dark" style="padding: 0;">
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
@@ -143,8 +147,11 @@
                 </li>
             </ul>
         </div>
-        <div class="header bg-dark d-flex justify-content-end align-items-center pr-1" style="width: 60%; background-color: #404040;">
-            <img id="panzereLogo" src="https://cdn.discordapp.com/attachments/1110823749973979198/1119987555941744650/logo2.png" style="width: 20%">
+        <div class="header bg-dark d-flex justify-content-end align-items-center pr-1"
+            style="width: 60%; background-color: #404040;">
+            <img id="panzereLogo"
+                src="https://cdn.discordapp.com/attachments/1110823749973979198/1119987555941744650/logo2.png"
+                style="width: 20%">
         </div>
     </nav>
 
@@ -185,7 +192,7 @@
         <footer class="bg-dark">
             (P)-Anzère tout droit réservé ©
         </footer>
-    </div> 
+    </div>
     <script type="text/javascript">
         let mapAnzere;
         let targets = [];
@@ -258,21 +265,6 @@
 
                     dropdownMenu.append(dropdownItem)
                 };
-            });
-
-            // circle appears where we clicked
-            mapAnzere.on('click', function (e) {
-                if (customShape) {
-                    mapAnzere.removeLayer(customShape);
-                }
-
-                customShape = L.circle(e.latlng, {
-                    radius: 10,
-                    color: 'red',
-                    fillOpacity: 0.7,
-                });
-
-                customShape.addTo(mapAnzere);
             });
         }
         function highlightFeature(e) {
@@ -442,6 +434,8 @@
                     let imageUrl = "https://cdn.discordapp.com/attachments/888190539093123072/1119660747862065244/Noir.png"
                     $("#Dificulty").append("<img src='" + imageUrl + "' alt='" + difficulty + " Difficulty'>");
                 }
+            } else {
+                $("#Dificulty").html("")
             }
         }
 

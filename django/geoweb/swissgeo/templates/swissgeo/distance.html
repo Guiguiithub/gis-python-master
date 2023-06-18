@@ -31,6 +31,7 @@
             display: flex;
             margin: 2em;
             margin-top: 1em;
+            flex-wrap: wrap;
         }
 
         .mapcontainer {
@@ -78,6 +79,10 @@
             text-align: center;
         }
 
+        #close {
+            color: white;
+        }
+
         footer {
             display: flex;
             justify-content: center;
@@ -88,26 +93,41 @@
             color: #8c8f93;
         }
 
-        @media (max-width: 768px)
-        {
-            #panzereLogo
-            {
+        @media (max-width: 768px) {
+            #panzereLogo {
                 display: none;
             }
-            .navbar
-            {
+
+            .navbar {
                 height: auto;
                 text-align: center;
             }
-            .navbar-toggler
-            {
+
+            .navbar-toggler {
                 position: relative;
                 left: 50%;
                 transform: translateX(-50%);
             }
+
+            .mapcontainer {
+                width: 100%;
+            }
+
+            .break {
+                flex-basis: 100%;
+                height: 0;
+            }
+
+            .info {
+                position: relative;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 100%;
+            }
         }
     </style>
 </head>
+
 <body>
     <nav class="navbar navbar-expand-md navbar-dark bg-dark">
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
@@ -127,13 +147,20 @@
                 </li>
             </ul>
         </div>
-        <div class="header bg-dark d-flex justify-content-end align-items-center pr-1" style="width: 60%; background-color: #404040;">
-            <img id="panzereLogo" src="https://cdn.discordapp.com/attachments/1110823749973979198/1119683284004257852/logo.png" style="width: 20%">
+        <div class="header bg-dark d-flex justify-content-end align-items-center pr-1"
+            style="width: 60%; background-color: #404040;">
+            <img id="panzereLogo"
+                src="https://cdn.discordapp.com/attachments/1110823749973979198/1119683284004257852/logo.png"
+                style="width: 20%">
         </div>
     </nav>
     <div class="mapInfo">
         <div class="mapcontainer">
             {% leaflet_map "pistes" callback="main_map_init" %}
+        </div>
+        <div class="break"></div>
+        <div class="info">
+            <div id="close"></div>
         </div>
     </div>
     <div>
@@ -167,6 +194,7 @@
 
     function main_map_init(map, options) {
         mapAnzere = map;
+        let customShape;
         mapAnzere.options.maxZoom = 20;
         mapAnzere.setView(L.latLng(46.3166, 7.3995), 14)
 
@@ -179,25 +207,87 @@
         batimentLayer = L.layerGroup().addTo(map);
 
         $.getJSON(pisteurl, function (data) {
-            L.geoJson(data).addTo(pistesLayer)
+            L.geoJson(data, { onEachFeature: onEachFeature }).addTo(pistesLayer)
+            const dropdownMenu = $("#DropdownMenu1");
+            for (let i = 0; i < data.features.length; i++) {
+                let feature = data.features[i]
+                let pisteName = feature.properties.pistes_nam;
+                let dropdownItem = $("<a class='dropdown-item' href='#'>" + pisteName + "</a>")
+
+                dropdownItem.click(function () {
+                    let bounds = L.geoJson(feature).getBounds();
+                    mapAnzere.fitBounds(bounds)
+                })
+
+                dropdownMenu.append(dropdownItem)
+            };
         })
         $.getJSON(remonteeurl, function (data) {
-            L.geoJson(data).addTo(remonteeLayer)
+            const geoJsonLayer = L.geoJson(data, { onEachFeature: onEachFeature }).addTo(remonteeLayer)
+
+            const dropdownMenu = $("#DropdownMenu1");
+            for (let i = 0; i < data.features.length; i++) {
+                let feature = data.features[i]
+                let remonteeName = feature.properties.rems_name;
+                let dropdownItem = $("<a class='dropdown-item' href='#'>" + remonteeName + "</a>")
+
+                dropdownItem.click(function () {
+                    let bounds = L.geoJson(feature).getBounds();
+                    mapAnzere.fitBounds(bounds)
+                })
+
+                dropdownMenu.append(dropdownItem)
+            };
         })
         $.getJSON(batimenturl, function (data) {
-            L.geoJson(data).addTo(batimentLayer)
+            console.log(batimentLayer)
+            const geoJsonLayer = L.geoJson(data, { onEachFeature: onEachFeature }).addTo(batimentLayer)
+            const dropdownMenu = $("#DropdownMenu1");
+            for (let i = 0; i < data.features.length; i++) {
+                let feature = data.features[i]
+                let batimentName = feature.properties.bat_name;
+                let dropdownItem = $("<a class='dropdown-item' href='#'>" + batimentName + "</a>")
+
+                dropdownItem.click(function () {
+                    let bounds = L.geoJson(feature).getBounds();
+                    mapAnzere.fitBounds(bounds)
+                })
+
+                dropdownMenu.append(dropdownItem)
+            };
         })
 
-        console.log(pistesLayer)
-        pistesLayer.eachLayer(function (layer) {
-            console.log("I'm here")
-            layer.setStyle({ opacity: 0, fillOpacity: 0 });
-        })
-        remonteeLayer.eachLayer(function (layer) {
-            layer.setStyle({ opacity: 0, fillOpacity: 0 });
-        })
-        batimentLayer.eachLayer(function (layer) {
-            layer.setStyle({ opacity: 0, fillOpacity: 0 });
+        mapAnzere.on('click', function (e) {
+            if (customShape) {
+                mapAnzere.removeLayer(customShape);
+            }
+            customShape = L.circle(e.latlng, {
+                radius: 10,
+                color: 'red',
+                fillOpacity: 0.7,
+            });
+            customShape.addTo(mapAnzere);
+            //.lat = 46, .lng = 7
+            let coordinates = customShape.getLatLng();
+            console.log(coordinates)
+            let close
+            const url = `closestPiste/${coordinates.lat}/${coordinates.lng}`
+            $.ajax({
+                url: url,
+                success: function (data) {
+                    close = data;
+                    $("#close").text("La piste la plus proche de votre point est " + close.pistes_nam + " et elle se trouve à " + close.dist + " mètres")
+                },
+                error: function () {
+                    console.error('Error occurred while retrieving piste length.');
+                }
+            })
+        });
+    }
+
+    function onEachFeature(feature, layer) {
+        layer.setStyle({
+            opacity: 0,
         })
     }
 </script>

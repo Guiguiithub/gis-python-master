@@ -64,6 +64,23 @@ def getLengthPiste(request, name):
     return JsonResponse(length, safe=False)
 
 
+def closestPiste(request, lat, lng):
+    lat = float(lat)
+    lng = float(lng)
+    cursor = connection.cursor()
+    cursor.execute(
+        "SELECT pistes_nam, MIN(ST_Distance(geom, ST_SetSRID(ST_GeogFromText('POINT(%s %s)'), 4326), true)) as Dist FROM public.pistes GROUP BY pistes_nam ORDER BY Dist LIMIT 1", [lng, lat])
+    close = cursor.fetchall()
+    if close:
+        pistes_nam, dist = close[0]
+        data = {
+            'pistes_nam': pistes_nam,
+            'dist': int(dist)
+        }
+
+    return JsonResponse(data)
+
+
 def getDistancePiste(request, name1, name2):
     cursor = connection.cursor()
 
