@@ -1,13 +1,103 @@
 <head>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
+        crossorigin="anonymous"></script>
+        <style>
+            body {
+                display: flex;
+                flex-direction: column;
+                background-color: #404040;
+                margin: 0;
+                min-height: 100vh;
+            }
+
+            .title
+            {
+                color: white;
+                text-align: center;
+                margin-top: 15px;
+                font-size: 50px;
+                margin-bottom: 100px;
+            }
+
+            .infos
+            {
+                color: white;
+                text-align: center;
+                font-size: 30px;
+            }
+    
+            .navbar {
+                height: 90px;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                padding: 0.5rem 0.75rem;
+            }
+    
+            footer {
+                display: flex;
+                justify-content: center;
+                margin-top: auto;
+                /*Keeps footer at the bottom*/
+                /*Might be better to use the seen in class method but that means Header and Footer would have an absolute size instead of relative??*/
+                padding: 1vw;
+                color: #8c8f93;
+            }
+    
+            @media (max-width: 768px)
+            {
+                #panzereLogo
+                {
+                    display: none;
+                }
+                .navbar
+                {
+                    height: auto;
+                    text-align: center;
+                }
+                .navbar-toggler
+                {
+                    position: relative;
+                    left: 50%;
+                    transform: translateX(-50%);
+                }
+            }
+        </style>
 </head>
 
-
-<ul class="list-group">
-    <li class="list-group-item d-flex justify-content-between align-items-center">
-        <h2>{{batiments.bat_name}}</h2>
-        <span class="badge badge-primary badge-pill">Id:{{batiments.id}}</span>
-        <span class="badge badge-primary badge-pill">Area: {{area}}</span>
-    </li>
-</ul>
+<body>
+    <nav class="navbar navbar-expand-md py-0 navbar-dark bg-dark" style="padding: 0;">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="../anzere">Carte <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="../list">Installations</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="../distance">Distance</a>
+                </li>
+            </ul>
+        </div>
+        <div class="header bg-dark d-flex justify-content-end align-items-center pr-1" style="width: 60%; background-color: #404040;">
+            <img id="panzereLogo" src="https://cdn.discordapp.com/attachments/1110823749973979198/1119987555941744650/logo2.png" style="width: 20%">
+        </div>
+    </nav>
+    <h2 class="title">{{batiments.bat_name}}</h2>
+    <div class="infos">
+        <p>Id : {{batiments.id}}</p>
+        <p>Aire : {{area}}</p>
+    </div>
+    <footer class="bg-dark">
+        (P)-Anzère tout droit réservé ©
+    </footer>
+</body>

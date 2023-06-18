@@ -20,7 +20,7 @@
         }
 
         .navbar {
-            height: 90px !important;
+            height: 90px;
             display: flex;
             flex-direction: row;
             justify-content: space-between;
@@ -31,6 +31,7 @@
             display: flex;
             margin: 2em;
             margin-top: 1em;
+            flex-wrap: wrap;
         }
 
         .mapcontainer {
@@ -80,12 +81,46 @@
 
         footer {
             display: flex;
-            justify-content: center;
             margin-top: auto;
+            justify-content: center;
             /*Keeps footer at the bottom*/
             /*Might be better to use the seen in class method but that means Header and Footer would have an absolute size instead of relative??*/
             padding: 1vw;
             color: #8c8f93;
+        }
+
+        @media (max-width: 768px)
+        {
+            #panzereLogo
+            {
+                display: none;
+            }
+            .navbar
+            {
+                height: auto;
+                text-align: center;
+            }
+            .navbar-toggler
+            {
+                position: relative;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            .mapcontainer
+            {
+                width: 100%;
+            }
+            .break
+            {
+                flex-basis: 100%;
+                height: 0;
+            }
+            .info
+            {
+                position: relative;
+                left: 50%;
+                transform: translateX(-50%);
+            }
         }
     </style>
 </head>
@@ -101,7 +136,7 @@
                     <a class="nav-link" href="anzere">Carte <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item ">
-                    <a class="nav-link" href="list">Installation</a>
+                    <a class="nav-link" href="list">Installations</a>
                 </li>
                 <li class="nav-item ">
                     <a class="nav-link" href="distance">Distance</a>
@@ -109,7 +144,7 @@
             </ul>
         </div>
         <div class="header bg-dark d-flex justify-content-end align-items-center pr-1" style="width: 60%; background-color: #404040;">
-            <img src="https://cdn.discordapp.com/attachments/1110823749973979198/1119683284004257852/logo.png" style="width: 20%">
+            <img id="panzereLogo" src="https://cdn.discordapp.com/attachments/1110823749973979198/1119987555941744650/logo2.png" style="width: 20%">
         </div>
     </nav>
 
@@ -117,7 +152,8 @@
         <div class="mapcontainer">
             {% leaflet_map "pistes" callback="main_map_init" %}
         </div>
-        <div id="infoId" class="info">
+        <div class="break"></div>
+        <div class="info">
             <div id="name"></div>
             <div id="Length"></div>
             <div id="Dificulty">

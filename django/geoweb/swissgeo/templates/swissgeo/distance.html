@@ -20,7 +20,7 @@
         }
 
         .navbar {
-            height: 90px !important;
+            height: 90px;
             display: flex;
             flex-direction: row;
             justify-content: space-between;
@@ -87,6 +87,25 @@
             padding: 1vw;
             color: #8c8f93;
         }
+
+        @media (max-width: 768px)
+        {
+            #panzereLogo
+            {
+                display: none;
+            }
+            .navbar
+            {
+                height: auto;
+                text-align: center;
+            }
+            .navbar-toggler
+            {
+                position: relative;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
     </style>
 </head>
 <body>
@@ -101,7 +120,7 @@
                     <a class="nav-link" href="anzere">Carte</a>
                 </li>
                 <li class="nav-item ">
-                    <a class="nav-link" href="list">Installation</a>
+                    <a class="nav-link" href="list">Installations</a>
                 </li>
                 <li class="nav-item active">
                     <a class="nav-link" href="distance">Distance<span class="sr-only">(current)</span></a>
@@ -109,7 +128,7 @@
             </ul>
         </div>
         <div class="header bg-dark d-flex justify-content-end align-items-center pr-1" style="width: 60%; background-color: #404040;">
-            <img src="https://cdn.discordapp.com/attachments/1110823749973979198/1119683284004257852/logo.png" style="width: 20%">
+            <img id="panzereLogo" src="https://cdn.discordapp.com/attachments/1110823749973979198/1119683284004257852/logo.png" style="width: 20%">
         </div>
     </nav>
     <div class="mapInfo">
