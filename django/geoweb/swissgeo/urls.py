@@ -23,4 +23,6 @@ urlpatterns = [
          views.getAreaBatiment, name='get_area_batiment'),
     re_path(r'^closestPiste/(?P<lat>[-+]?[0-9]*\.?[0-9]+)/(?P<lng>[-+]?[0-9]*\.?[0-9]+)/$',
             views.closestPiste, name='closest_piste'),
+    path('get_distance_piste/<str:name1>/<str:name2>/',
+         views.getDistancePiste, name='get_distance_piste'),
 ]

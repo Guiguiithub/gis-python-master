@@ -165,20 +165,25 @@
     </div>
     <div>
         <div class="btn-group">
-            <button class="btn btn-danger dropdown-toggle margin" type="button" id="dropdownMenuButton"
+            <button class="btn btn-danger dropdown-toggle margin" type="button" id="dropdownMenuButton1"
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Sélectionnez un endroit
+                Sélectionnez un endroit 1
             </button>
             <div class="dropdown-menu" id="DropdownMenu1"></div>
         </div>
 
         <div class="btn-group">
-            <button class="btn btn-danger dropdown-toggle margin" type="button" id="dropdownMenuButton"
+            <button class="btn btn-danger dropdown-toggle margin" type="button" id="dropdownMenuButton2"
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Sélectionnez un endroit
+                Sélectionnez un endroit 2
             </button>
             <div class="dropdown-menu" id="DropdownMenu2"></div>
         </div>
+
+        <button type="button" class="btn btn-primary" id="calculate">Calculate</button>
+    </div>
+    <div>
+        <p id="result" style="color: white;"></p>
     </div>
     <footer class="bg-dark">
         (P)-Anzère tout droit réservé ©
@@ -190,7 +195,16 @@
 
 <script type="text/javascript">
     let mapAnzere
-    let pistesLayer, remonteeLayer, batimentLayer;
+    let target = []
+
+    let closestPistes = ""
+
+    let selectedPiste1 = ""
+    let selectedPiste2 = ""
+    //reset opacity and avoid for loop
+    let id1
+    let id2
+    let closeid
 
     function main_map_init(map, options) {
         mapAnzere = map;
@@ -202,58 +216,58 @@
         let remonteeurl = '{% url "remonteejson" %}'
         let batimenturl = '{% url "batimentjson" %}'
 
-        pistesLayer = L.layerGroup().addTo(map);
-        remonteeLayer = L.layerGroup().addTo(map);
-        batimentLayer = L.layerGroup().addTo(map);
-
         $.getJSON(pisteurl, function (data) {
-            L.geoJson(data, { onEachFeature: onEachFeature }).addTo(pistesLayer)
+            L.geoJson(data, { onEachFeature: onEachFeature }).addTo(map)
             const dropdownMenu = $("#DropdownMenu1");
+            const dropdownMenu2 = $("#DropdownMenu2");
             for (let i = 0; i < data.features.length; i++) {
                 let feature = data.features[i]
                 let pisteName = feature.properties.pistes_nam;
-                let dropdownItem = $("<a class='dropdown-item' href='#'>" + pisteName + "</a>")
+                let dropdownItem1 = $("<a class='dropdown-item' href='#'>" + pisteName + "</a>")
+                let dropdownItem2 = $("<a class='dropdown-item' href='#'>" + pisteName + "</a>")
 
-                dropdownItem.click(function () {
+                dropdownItem1.click(function () {
+                    if (id1 != null) {
+                        target[id1].setStyle({
+                            opacity: 0,
+                        })
+                    }
+                    selectedPiste1 = feature.properties.pistes_nam
+                    for (let i = 0; i < target.length; i++) {
+                        if (target[i].feature == feature) {
+                            id1 = i
+                            target[i].setStyle({
+                                color: 'gold',
+                                opacity: 1,
+                            })
+                        }
+                    }
+                    let bounds = L.geoJson(feature).getBounds();
+                    mapAnzere.fitBounds(bounds)
+                })
+                dropdownItem2.click(function () {
+                    if (id2 != null) {
+                        target[id2].setStyle({
+                            opacity: 0,
+                        })
+                    }
+                    selectedPiste2 = feature.properties.pistes_nam
+                    for (let i = 0; i < target.length; i++) {
+                        if (target[i].feature == feature) {
+                            id2 = i
+                            target[i].setStyle({
+                                color: 'red',
+                                opacity: 1,
+                            })
+                            break
+                        }
+                    }
                     let bounds = L.geoJson(feature).getBounds();
                     mapAnzere.fitBounds(bounds)
                 })
 
-                dropdownMenu.append(dropdownItem)
-            };
-        })
-        $.getJSON(remonteeurl, function (data) {
-            const geoJsonLayer = L.geoJson(data, { onEachFeature: onEachFeature }).addTo(remonteeLayer)
-
-            const dropdownMenu = $("#DropdownMenu1");
-            for (let i = 0; i < data.features.length; i++) {
-                let feature = data.features[i]
-                let remonteeName = feature.properties.rems_name;
-                let dropdownItem = $("<a class='dropdown-item' href='#'>" + remonteeName + "</a>")
-
-                dropdownItem.click(function () {
-                    let bounds = L.geoJson(feature).getBounds();
-                    mapAnzere.fitBounds(bounds)
-                })
-
-                dropdownMenu.append(dropdownItem)
-            };
-        })
-        $.getJSON(batimenturl, function (data) {
-            console.log(batimentLayer)
-            const geoJsonLayer = L.geoJson(data, { onEachFeature: onEachFeature }).addTo(batimentLayer)
-            const dropdownMenu = $("#DropdownMenu1");
-            for (let i = 0; i < data.features.length; i++) {
-                let feature = data.features[i]
-                let batimentName = feature.properties.bat_name;
-                let dropdownItem = $("<a class='dropdown-item' href='#'>" + batimentName + "</a>")
-
-                dropdownItem.click(function () {
-                    let bounds = L.geoJson(feature).getBounds();
-                    mapAnzere.fitBounds(bounds)
-                })
-
-                dropdownMenu.append(dropdownItem)
+                dropdownMenu.append(dropdownItem1)
+                dropdownMenu2.append(dropdownItem2)
             };
         })
 
@@ -269,13 +283,26 @@
             customShape.addTo(mapAnzere);
             //.lat = 46, .lng = 7
             let coordinates = customShape.getLatLng();
-            console.log(coordinates)
             let close
             const url = `closestPiste/${coordinates.lat}/${coordinates.lng}`
             $.ajax({
                 url: url,
                 success: function (data) {
                     close = data;
+                    if (closeid != null) {
+                        target[closeid].setStyle({
+                            opacity: 0,
+                        })
+                    }
+                    for (let i = 0; i < target.length; i++) {
+                        if (target[i].feature.properties.pistes_nam == close.pistes_nam) {
+                            closeid = i;
+                            target[i].setStyle({
+                                color: 'blue',
+                                opacity: 1,
+                            })
+                        }
+                    }
                     $("#close").text("La piste la plus proche de votre point est " + close.pistes_nam + " et elle se trouve à " + close.dist + " mètres")
                 },
                 error: function () {
@@ -289,5 +316,23 @@
         layer.setStyle({
             opacity: 0,
         })
+
+        target.push(layer)
     }
+
+    function calculateDistancePiste() {
+        if (selectedPiste1 && selectedPiste2) {
+            const url = `get_distance_piste/${selectedPiste1}/${selectedPiste2}`
+
+            $.ajax({
+                url: url,
+                success: function (data) {
+                    const result = `The distance between ${selectedPiste1} and ${selectedPiste2} is ${data} meters.`
+                    $("#result").text(result)
+                }
+            })
+        }
+    }
+
+    $("#calculate").click(calculateDistancePiste)
 </script>

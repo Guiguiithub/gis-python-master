@@ -83,6 +83,14 @@ def closestPiste(request, lat, lng):
 
 def getDistancePiste(request, name1, name2):
     cursor = connection.cursor()
+    cursor.execute(
+        "SELECT ST_3DDistance(ST_Transform(p1.geom, 2056), ST_Transform(p2.geom, 2056)) FROM public.pistes p1 JOIN public.pistes p2 ON p1.pistes_nam =%s AND p2.pistes_nam =%s", [name1, name2])
+    dist = cursor.fetchall()
+    if dist:
+        dist = dist[0][0]
+
+    dist = int(dist)
+    return JsonResponse(dist, safe=False)
 
 
 def remonteejson(request):
