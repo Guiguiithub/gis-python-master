@@ -5,6 +5,13 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
     crossorigin="anonymous"></script>
+  <script>
+    $(document).ready(function () {
+      $('h1').click(function () {
+        $(this).next('.list-group').slideToggle();
+      });
+    });
+  </script>
 
   <style>
     body {
@@ -15,48 +22,86 @@
       min-height: 100vh;
     }
 
+    .navbar {
+      height: 90px;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      padding: 0.5rem 0.75rem;
+    }
+
+    h1 {
+      cursor: pointer;
+    }
+
+    h1:hover {
+      color: blue;
+    }
+
+    .list-group {
+      display: none;
+    }
+
     footer {
       display: flex;
       justify-content: center;
-      background-color: #464646;
       margin-top: auto;
       /*Keeps footer at the bottom*/
       /*Might be better to use the seen in class method but that means Header and Footer would have an absolute size instead of relative??*/
       padding: 1vw;
+      color: #8c8f93;
+    }
+
+    @media (max-width: 768px) {
+      #panzereLogo {
+        display: none;
+      }
+
+      .navbar {
+        height: auto;
+        text-align: center;
+      }
+
+      .navbar-toggler {
+        position: relative;
+        left: 50%;
+        transform: translateX(-50%);
+      }
     }
   </style>
 </head>
 
-<div class="header bg-dark">
-  <img src="https://cdn.discordapp.com/attachments/1110823749973979198/1119683284004257852/logo.png" width="50%">
-</div>
-
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav"
-    aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarNav">
-    <ul class="navbar-nav">
-      <li class="nav-item ">
-        <a class="nav-link" href="anzere">Carte</a>
-      </li>
-      <li class="nav-item active">
-        <a class="nav-link" href="list">Installations<span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item ">
-        <a class="nav-link" href="distance">Distance</a>
-      </li>
-    </ul>
-  </div>
-</nav>
-
 <body>
+  <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="anzere">Carte</a>
+        </li>
+        <li class="nav-item ">
+          <a class="nav-link" href="list">Installations</a>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link" href="distance">Distance<span class="sr-only">(current)</span></a>
+        </li>
+      </ul>
+    </div>
+    <div class="header bg-dark d-flex justify-content-end align-items-center pr-1"
+      style="width: 60%; background-color: #404040;">
+      <img id="panzereLogo"
+        src="https://cdn.discordapp.com/attachments/1110823749973979198/1119683284004257852/logo.png"
+        style="width: 20%">
+    </div>
+  </nav>
   <h1 class="mb-3 text-center">Liste des pistes</h1>
   <ul class="list-group">
     {% for piste in pistes %}
     <li>
-      <a href="/swissgeo/pistes/{{piste.id}}" class="list-group-item list-group-item-action">
+      <a href="/swissgeo/pistes/{{piste.id}}" class="list-group-item list-group-item-action list-group-item-dark">
         {{piste.pistes_nam}}
       </a>
     </li>
@@ -67,7 +112,7 @@
   <ul class="list-group">
     {% for remontee in remontees %}
     <li>
-      <a href="/swissgeo/remontees/{{remontee.id}}" class="list-group-item list-group-item-action">
+      <a href="/swissgeo/remontees/{{remontee.id}}" class="list-group-item list-group-item-action list-group-item-dark">
         {{remontee.rems_name}}
       </a>
     </li>
@@ -78,7 +123,7 @@
   <ul class="list-group">
     {% for batiment in batiments %}
     <li>
-      <a href="/swissgeo/batiments/{{batiment.id}}" class="list-group-item list-group-item-action">
+      <a href="/swissgeo/batiments/{{batiment.id}}" class="list-group-item list-group-item-action list-group-item-dark">
         {{batiment.bat_name}}
       </a>
     </li>

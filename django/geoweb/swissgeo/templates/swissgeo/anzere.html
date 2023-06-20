@@ -196,8 +196,10 @@
     <script type="text/javascript">
         let mapAnzere;
         let targets = [];
+
         localStorage.setItem("currentlySelected", "none");
         localStorage.setItem("currentlySelectedType", "none");
+
         function main_map_init(map, options) {
             mapAnzere = map;
             let customShape;
@@ -219,11 +221,27 @@
                     let dropdownItem = $("<a class='dropdown-item' href='#'>" + pisteName + "</a>")
 
                     dropdownItem.click(function () {
+                        if (localStorage.getItem("currentlySelected") != "none") {
+                            resetHighlight(retrieveTargetByName(localStorage.getItem("currentlySelected")))
+                        }
+                        for (let i = 0; i < targets.length; i++) {
+                            if (targets[i].feature == feature) {
+                                localStorage.setItem("currentlySelectedType", feature.properties.type)
+                                localStorage.setItem("currentlySelected", feature.properties.pistes_nam)
+                                targets[i].setStyle({
+                                    weight: 7,
+                                    color: 'gold',
+                                    dashArray: '',
+                                    fillOpacity: 0.7
+                                })
+                                getName(targets[i].feature)
+                                getLengthArea(targets[i].feature)
+                                getDifficulty(targets[i].feature)
+                            }
+                        }
                         let bounds = L.geoJson(feature).getBounds();
                         mapAnzere.fitBounds(bounds)
-                        //Call the displayInfo and hilighFeature
                     })
-
                     dropdownMenu.append(dropdownItem)
                 };
             });
@@ -238,14 +256,29 @@
                     let dropdownItem = $("<a class='dropdown-item' href='#'>" + remonteeName + "</a>")
 
                     dropdownItem.click(function () {
+                        if (localStorage.getItem("currentlySelected") != "none") {
+                            resetHighlight(retrieveTargetByName(localStorage.getItem("currentlySelected")))
+                        }
+                        for (let i = 0; i < targets.length; i++) {
+                            if (targets[i].feature == feature) {
+                                localStorage.setItem("currentlySelectedType", feature.properties.type)
+                                localStorage.setItem("currentlySelected", feature.properties.rems_name)
+                                targets[i].setStyle({
+                                    weight: 7,
+                                    color: 'gold',
+                                    dashArray: '',
+                                    fillOpacity: 0.7
+                                })
+                                getName(targets[i].feature)
+                                getLengthArea(targets[i].feature)
+                                getDifficulty(targets[i].feature)
+                            }
+                        }
                         let bounds = L.geoJson(feature).getBounds();
                         mapAnzere.fitBounds(bounds)
-                        //Call the displayInfo and hilighFeature
                     })
-
                     dropdownMenu.append(dropdownItem)
                 };
-
             });
 
             $.getJSON(batimenturl, function (data) {
@@ -258,15 +291,32 @@
                     let dropdownItem = $("<a class='dropdown-item' href='#'>" + batimentName + "</a>")
 
                     dropdownItem.click(function () {
+                        if (localStorage.getItem("currentlySelected") != "none") {
+                            resetHighlight(retrieveTargetByName(localStorage.getItem("currentlySelected")))
+                        }
+                        for (let i = 0; i < targets.length; i++) {
+                            if (targets[i].feature == feature) {
+                                localStorage.setItem("currentlySelectedType", feature.properties.type)
+                                localStorage.setItem("currentlySelected", feature.properties.bat_name)
+                                targets[i].setStyle({
+                                    weight: 7,
+                                    color: 'gold',
+                                    dashArray: '',
+                                    fillOpacity: 0.7
+                                })
+                                getName(targets[i].feature)
+                                getLengthArea(targets[i].feature)
+                                getDifficulty(targets[i].feature)
+                            }
+                        }
                         let bounds = L.geoJson(feature).getBounds();
                         mapAnzere.fitBounds(bounds)
-                        //Call the displayInfo and hilighFeature
                     })
-
                     dropdownMenu.append(dropdownItem)
                 };
             });
         }
+
         function highlightFeature(e) {
             var layer = e.target;
             console.log("I'm there")
@@ -356,87 +406,10 @@
                 resetHighlight(retrieveTargetByName(localStorage.getItem("currentlySelected")))
             }
             mapAnzere.fitBounds(e.target.getBounds());
-            let name
-            localStorage.setItem("currentlySelectedType", e.target.feature.properties.type)
-            if (e.target.feature.properties.type == 'remontee') {
-                name = e.target.feature.properties.rems_name;
-                localStorage.setItem("currentlySelected", name);
-                $("#name").text(name);
-            }
-            else if (e.target.feature.properties.type == 'piste') {
-                name = e.target.feature.properties.pistes_nam;
-                localStorage.setItem("currentlySelected", name);
-                $("#name").text(name);
-            }
-            else {
-                name = e.target.feature.properties.bat_name;
-                localStorage.setItem("currentlySelected", name);
-                $("#name").text(name);
-            }
 
-            let Length
-            if (e.target.feature.geometry.type == 'MultiLineString') {
-                if (e.target.feature.properties.type == 'piste') {
-                    const pisteName = e.target.feature.properties.pistes_nam;
-                    const url = `/swissgeo/get_length_piste/${pisteName}/`;
-                    $.ajax({
-                        url: url,
-                        success: function (data) {
-                            Length = data;
-                            $("#Length").text("Longueur de la piste: " + Length + " mètres");
-                        },
-                        error: function () {
-                            console.error('Error occurred while retrieving piste length.');
-                        }
-                    });
-                }
-                else {
-                    const remonteeName = e.target.feature.properties.rems_name;
-                    const url = `/swissgeo/get_length_remontee/${remonteeName}/`;
-                    $.ajax({
-                        url: url,
-                        success: function (data) {
-                            Length = data;
-                            $("#Length").text("Longueur de la remontée: " + Length + " mètres");
-                        },
-                        error: function () {
-                            console.error('Error occurred while retrieving piste length.');
-                        }
-                    });
-                }
-            }
-            else {
-                const batimentName = e.target.feature.properties.bat_name;
-                const url = `/swissgeo/get_area_batiment/${batimentName}/`;
-                $.ajax({
-                    url: url,
-                    success: function (data) {
-                        Length = data;
-                        $("#Length").text("Aire du bâtiment: " + Length + " mètres carrés");
-                    },
-                    error: function () {
-                        console.error('Error occurred while retrieving piste length.');
-                    }
-                });
-            }
-            let difficulty;
-            if (e.target.feature.properties.type == 'piste') {
-                $("#Dificulty").html("<p>Difficulté de la piste :</p>")
-                if (e.target.feature.properties.difficulty == 'rouge') {
-                    let imageUrl = "https://cdn.discordapp.com/attachments/888190539093123072/1119660736109617162/Rouge.png"
-                    $("#Dificulty").append("<img src='" + imageUrl + "' alt='" + difficulty + " Difficulty'>");
-                }
-                else if (e.target.feature.properties.difficulty == 'bleu') {
-                    let imageUrl = "https://cdn.discordapp.com/attachments/888190539093123072/1119660744523395102/Bleu.png"
-                    $("#Dificulty").append("<img src='" + imageUrl + "' alt='" + difficulty + " Difficulty'>");
-                }
-                else {
-                    let imageUrl = "https://cdn.discordapp.com/attachments/888190539093123072/1119660747862065244/Noir.png"
-                    $("#Dificulty").append("<img src='" + imageUrl + "' alt='" + difficulty + " Difficulty'>");
-                }
-            } else {
-                $("#Dificulty").html("")
-            }
+            getName(e.target.feature)
+            getLengthArea(e.target.feature)
+            getDifficulty(e.target.feature)
         }
 
         function retrieveTargetByName(name) {
@@ -452,6 +425,84 @@
             localStorage.setItem("currentlySelected", "none");
             localStorage.setItem("currentlySelectedType", "none");
             return newTarget;
+        }
+
+        function getDifficulty(feature) {
+            let difficulty;
+            if (feature.properties.type == 'piste') {
+                $("#Dificulty").html("<p>Difficulté de la piste :</p>")
+                if (feature.properties.difficulty == 'rouge') {
+                    let imageUrl = "https://cdn.discordapp.com/attachments/888190539093123072/1119660736109617162/Rouge.png"
+                    $("#Dificulty").append("<img src='" + imageUrl + "' alt='" + difficulty + " Difficulty'>");
+                }
+                else if (feature.properties.difficulty == 'bleu') {
+                    let imageUrl = "https://cdn.discordapp.com/attachments/888190539093123072/1119660744523395102/Bleu.png"
+                    $("#Dificulty").append("<img src='" + imageUrl + "' alt='" + difficulty + " Difficulty'>");
+                }
+                else {
+                    let imageUrl = "https://cdn.discordapp.com/attachments/888190539093123072/1119660747862065244/Noir.png"
+                    $("#Dificulty").append("<img src='" + imageUrl + "' alt='" + difficulty + " Difficulty'>");
+                }
+            } else {
+                $("#Dificulty").html("")
+            }
+        }
+
+        function getLengthArea(feature) {
+            let Length
+            let name
+            let url
+
+            if (feature.geometry.type == 'MultiLineString') {
+                if (feature.properties.type == 'piste') {
+                    name = feature.properties.pistes_nam;
+                    url = `/swissgeo/get_length_piste/${name}/`;
+                }
+                else {
+                    name = feature.properties.rems_name;
+                    url = `/swissgeo/get_length_remontee/${name}/`;
+                }
+            }
+            else {
+                name = feature.properties.bat_name;
+                url = `/swissgeo/get_area_batiment/${name}/`;
+            }
+            $.ajax({
+                url: url,
+                success: function (data) {
+                    Length = data;
+                    if (feature.properties.type == 'piste') {
+                        $("#Length").text("Longueur de la piste: " + Length + " mètres");
+                    } else if (feature.properties.type == 'remontee') {
+                        $("#Length").text("Longueur de la remontée: " + Length + " mètres");
+                    } else {
+                        $("#Length").text("Aire du bâtiment: " + Length + " mètres carrés");
+                    }
+                },
+                error: function () {
+                    console.error('Error occurred while retrieving piste length.');
+                }
+            });
+        }
+
+        function getName(feature) {
+            let name
+            localStorage.setItem("currentlySelectedType", feature.properties.type)
+            if (feature.properties.type == 'remontee') {
+                name = feature.properties.rems_name;
+                localStorage.setItem("currentlySelected", name);
+                $("#name").text(name);
+            }
+            else if (feature.properties.type == 'piste') {
+                name = feature.properties.pistes_nam;
+                localStorage.setItem("currentlySelected", name);
+                $("#name").text(name);
+            }
+            else {
+                name = feature.properties.bat_name;
+                localStorage.setItem("currentlySelected", name);
+                $("#name").text(name);
+            }
         }
     </script>
 </body>

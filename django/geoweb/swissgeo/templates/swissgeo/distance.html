@@ -57,6 +57,10 @@
             color: white;
         }
 
+        h4 {
+            text-align: center;
+        }
+
         .info div {
             margin-bottom: 10px;
             border-radius: 5px;
@@ -80,6 +84,16 @@
         }
 
         #close {
+            color: white;
+        }
+
+        #calculate {
+            width: 50%;
+            margin: 2em;
+        }
+
+        #result {
+            text-align: center;
             color: white;
         }
 
@@ -124,6 +138,10 @@
                 transform: translateX(-50%);
                 width: 100%;
             }
+
+            #calculate {
+                width: auto;
+            }
         }
     </style>
 </head>
@@ -160,6 +178,8 @@
         </div>
         <div class="break"></div>
         <div class="info">
+            <h4>Appuyez à un endroit sur la map afin de savoir quelle piste est la plus proche de votre point</h4>
+            <br>
             <div id="close"></div>
         </div>
     </div>
@@ -179,11 +199,10 @@
             </button>
             <div class="dropdown-menu" id="DropdownMenu2"></div>
         </div>
-
-        <button type="button" class="btn btn-primary" id="calculate">Calculate</button>
     </div>
+    <button type="button" class="btn btn-primary" id="calculate">Calculate</button>
     <div>
-        <p id="result" style="color: white;"></p>
+        <p id="result"></p>
     </div>
     <footer class="bg-dark">
         (P)-Anzère tout droit réservé ©
@@ -195,10 +214,10 @@
 
 <script type="text/javascript">
     let mapAnzere
+    //access the setStyle anywhere on the code
     let target = []
 
     let closestPistes = ""
-
     let selectedPiste1 = ""
     let selectedPiste2 = ""
     //reset opacity and avoid for loop
@@ -209,7 +228,7 @@
     function main_map_init(map, options) {
         mapAnzere = map;
         let customShape;
-        mapAnzere.options.maxZoom = 20;
+        mapAnzere.options.maxZoom = 18;
         mapAnzere.setView(L.latLng(46.3166, 7.3995), 14)
 
         let pisteurl = '{% url "pistejson" %}'
@@ -316,7 +335,6 @@
         layer.setStyle({
             opacity: 0,
         })
-
         target.push(layer)
     }
 
