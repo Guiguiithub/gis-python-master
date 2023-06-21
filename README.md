@@ -13,3 +13,13 @@
 - GeoPython
 - Leaflet
 - Docker
+
+## Launced the application
+- open a terminal or cmd and go under django
+- run 'docker compose up'
+- in docker, to the container web with the port 8000
+- go to the terminal in this container and run 'bash'
+- go under geoweb 'cd geoweb' and run 'python manage.py makemigrations' and then 'python manage.py migrate'
+- populate the database 'python manage.py loaddata data.json'
+
+You shoudl be able to access the website and the database with this configurations
