@@ -294,11 +294,11 @@
             if (customShape) {
                 mapAnzere.removeLayer(customShape);
             }
-            customShape = L.circle(e.latlng, {
-                radius: 10,
-                color: 'red',
-                fillOpacity: 0.7,
-            });
+            let customIcon = L.icon({
+                iconUrl: 'https://cdn.discordapp.com/attachments/987240673512140860/1121401635223117834/1412982.png',
+                iconSize: [20, 20]
+            })
+            customShape = L.marker(e.latlng, { icon: customIcon })
             customShape.addTo(mapAnzere);
             //.lat = 46, .lng = 7
             let coordinates = customShape.getLatLng();
