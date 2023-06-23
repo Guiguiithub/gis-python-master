@@ -22,4 +22,4 @@
 - go under geoweb 'cd geoweb' and run 'python manage.py makemigrations' and then 'python manage.py migrate'
 - populate the database 'python manage.py loaddata data.json'
 
-You shoudl be able to access the website and the database with this configurations
+You should be able to access the website and the database with this configurations.
