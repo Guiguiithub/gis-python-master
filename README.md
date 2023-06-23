@@ -14,7 +14,7 @@
 - Leaflet
 - Docker
 
-## Launced the application
+## Launched the application
 - open a terminal or cmd and go under django
 - run 'docker compose up'
 - in docker, to the container web with the port 8000
